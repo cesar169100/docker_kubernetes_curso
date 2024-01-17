@@ -29,6 +29,8 @@ EXPOSE:El puerto que pongas aqui sera el puerto principal del container y se gua
 CMD: Comando a ejecutar por defecto cuando lancemos un container basado en esta imagen
 A diferencia del comando RUN, los comandos que se pasen por medio de este método se ejecutan una vez que el contenedor se ha inicializado, mientras que RUN se utiliza para crear la imagen de un contenedor.
 
+### Primeros comandos
+
 Comandos:
 1) docker build ruta: Ejemplo es "docker build ." este comando construye una imagen y el punto indica el directorio donde esta el dockerfile, en este caso buscara en el directorio actual.
 2) docker images : Vemos las imagenes.
@@ -44,8 +46,53 @@ Comandos:
 12) docker inspect image_id, container_id :Nos da info sobre la imagen o container.
 13) docker create -p 8080:80 --name "nombre" image_id :Este comando crea nuestro container a partir de la imagen indicada, con el nombre que queramos y mapeando el puerto 80(en el que respnde nginx y es el puerto del container) al 8080 de nuestra maquina.
 14) docker create -P --name "nombre" image_id :En este comando ya no fue necesario poner el puerto de el container(80) pues se especifico con el expose del dockerfile. Tambien mapea ese puerto en uno local, que es parte de un conjunto de puertos que se conocen como efimeros y estan definidos en algun lugar, el punto es que se elijen al azar de un rango y no es necesario preocuparse por saber cuales de nuestros puertos locales ya estan ocupados pues lo va a mandar automaticamente a uno libre de ese rango.
+15) docker exec -it container_id,nombre bash :Con este comando entramos a la consola bash del container. En esta consola se pueden ejecutar comandos normales por ejemplo de instalacion apt update etc. Si paras y reinicias el container los datos seguiran ahi pero si lo eliminas pues no.
+16) docker exec container_id,nombre bash -c "comando a ejecutar" :Con este comando puedes ejecutar el "comando a ejecutar" en la consola del container en idioma bash sin tener que entrar a su consola con el comando anterior.
 
 Notas:
 1) Con docker inspect, en el bloque de NetworkSettings hay un campo que se llama IPAddress. Esta IP es la asociada a nuestro container. Si la pones en el navegador entras a tu container.
 Hacer peticiones a esta IP es incorrecto pues si vuelves a levantar el container la IP puede cambiar, es decir, esta IP es efimera.
 2) Para poder acceder correctamente a los puertos de un container podemos "mapear" los puertos, por ejemplo, el puerto 80 en el que responde nginx este mapeado a un puerto fijo de nuetra maquina. Revisar comando docker create. Asi, ya no importa cuantas veces levantemos el container, si especificamos el mapeo en el comando podremos acceder.
+
+### Volumenes
+
+Recordemos que cualquier cosa que hayamos creado en un container solo estara ahi mientras el container viva. Si creamos una carpeta, instalamos algo, etc, esto desaparece si matamos al container. Para dar persistencia (no se pierdan los datos), podemos hacer uso de un sistema de volumenes en docker.
+
+1) Sistema bind mount: Ya no se usa. Consiste en crear un container cuyo volumen(lo que tiene dentro) o dirctorio en especifico venga ligado a un directorio de la maquina donde estemos corriendo este container. Para entornos prod no se recomienda, es mejor el sistema de volumenes.
+2) Sistema de volumenes: Son mas faciles de migrar pues no estan ligados a ruta local. Se pueden manejar con comandos docker. Funcionan en containers de linux y windows. Son mas seguros de compartir entre containers. Mejor rendimiento.
+3) No se elimina un volumen que este siendo usado por un container. Primero elimina el container.
+4) Kubernetes tiene un mejor sistema de volumenes.
+
+Comandos:
+1) docker create --name "nombre_container" --mount type=bind,source="$(pwd)/src",target=/src image_id  :Crea el container con el nombre y toma lo que exista en nuestra ruta local pwd(directorio actual)/app y lo monta  en la carpeta /app del container. Ahora, si creamos un nuevo archivo dentro de la carpeta /src del container y luego lo matamos, este nuevo archivo existira en nuestra carpeta local tambien,de manera que si levantamos de nuevo el container tendrmos nuestro nuevo archivo ahi.
+2) docker volume ls :Lista de volumenes.
+3) docker volume create "nombre_volumen" :Creas un volumen.
+4) docker volume inspect "volume_name" :Datos del volumen. Entre ellos, viene la ruta local donde se almacenan los volumenes. A esta ruta solo podemos acceder como root (escribir sudo su y entraremos a nuestra consola como root). Damos cd para ponernos al inicio y luego cd y la ruta que aparece en el inspect y ahi veremos nuestro volumen.
+5) docker volume rm "nombre_volumen" :Lo elimina
+6) docker volume prune :Los elimina todos.
+7) docker create --name "nombre_container" --mount source="mivolumen",target=/app image_id :Similar al primer comando.
+8) docker create --name "nombre_container" -v "mivolumen":/app image_id :Aun mas simple. Solo se especifica el nombre de nuestro volumen y la carpeta destino del container
+
+### Configuracion de red con Docker Network
+
+Existen drivers de red que nos proporcionan funcionalidades basicas. Al igual que el caso anterior, kubernetes tiene mejores opciones.
+Driver: Basicamente provee de las insturcciones necesarias al sistema operativo para saber cómo comunicarse con este nuevo dispositivo.
+Estos son los drivers de red para funcionalidades de nuestros contenedores:
+1) bridge :Permiten a los containers tener subred dedicada y obtendran IPs de esa red para comunicarse entre ellos. Estaran aislados del host (nuestra compu)
+2) host: Ya no se aislan del host, obtienen una IP directa de la red del host.
+3) overlay : Para clusters.
+
+Comandos:
+1) docker network ls :Las redes por defecto (bridge, host)
+2) docker network create --driver "tipo_driver" "nombre" :Crea una network con el driver especificado (bridge, host, etc) y su nombre que le queramos dar.
+3) docker inspect "network_name" :Datos de la network. En particular se ve el driver y su subnet. Cualquier container que lanzaramos dentro de este network se lanzara con una de esas IPs del subnet.
+4) docker create --name "container_name" --network "network_name" image_id :Crea el container en esa network y tendra la ip correspondiente a la subnet de la network.
+5) docker network rm "net1","net2",...  :Elimina las networks.
+
+### Docker Hub
+1) docker login / sudo docker login :Para acceder a nuestra cuenta de DockerHub, subir nuestras imagenes locales, etc.
+2) docker tag imagename:TAG newname:newTAG :Crea una copia de una imagen con un nuevo nombre y tag.
+3) sudo docker push cesar169/helloworld:tagname :Sube una imagen a nuestro repo de docherhub. Debe tener el nombre de nuestro usuario/repo/tag
+4) docker pull cesar169/helloworld:tagname :Jala esta imagen del repo.
+
+### Variables de entorno
