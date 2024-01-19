@@ -96,3 +96,23 @@ Comandos:
 4) docker pull cesar169/helloworld:tagname :Jala esta imagen del repo.
 
 ### Variables de entorno
+Comandos:
+1) docker create -e variable1=db.midominio -e variable2=miusuario -e variable3=mipass --name c1 image_id :En este comando especificas con e las variables de entorno. Al iniciar el container y acceder a su terminal, con el comando env en este caso pues el container es ubuntu, podremos ver las variables. Puedes especificar tantas variables como desees.
+
+### Supervisor
+Sistema de monitorizacion y control de procesos en linux. Revisar despues, no le entiendo.
+
+### Ciclo vida container
+1) Creado  :docker create ...
+2) running :docker start container_id, name
+3) paused  :docker pause ..................
+4) stopped : docker stop container_id, name
+5) deleted :docker rm .....................
+
+Comandos extra:
+1) docker restart container_id, name :Lo para y reinicia.
+2) docker unpause .................. :Quita la pausa.
+3) El container tambien puede morir si se queda sin memoria o da error, salvo en el caso que no tengamos una condicion de restart.
+4) docker run --name nombre -P -e var1=mivar1 .... -d image_id :Crea y corre de una.
+
+### Restart policies
