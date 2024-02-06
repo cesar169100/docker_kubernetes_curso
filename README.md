@@ -64,7 +64,7 @@ Recordemos que cualquier cosa que hayamos creado en un container solo estara ahi
 4) Kubernetes tiene un mejor sistema de volumenes.
 
 Comandos:
-1) docker create --name "nombre_container" --mount type=bind,source="$(pwd)/src",target=/src image_id  :Crea el container con el nombre y toma lo que exista en nuestra ruta local pwd(directorio actual)/app y lo monta  en la carpeta /app del container. Ahora, si creamos un nuevo archivo dentro de la carpeta /src del container y luego lo matamos, este nuevo archivo existira en nuestra carpeta local tambien,de manera que si levantamos de nuevo el container tendrmos nuestro nuevo archivo ahi.
+1) docker create --name "nombre_container" --mount type=bind,source="$(pwd)/src",target=/src image_id  :Crea el container con el nombre y toma lo que exista en nuestra ruta local pwd(directorio actual)/src y lo monta  en la carpeta /src del container. Ahora, si creamos un nuevo archivo dentro de la carpeta /src del container y luego lo matamos, este nuevo archivo existira en nuestra carpeta local tambien,de manera que si levantamos de nuevo el container tendrmos nuestro nuevo archivo ahi.
 2) docker volume ls :Lista de volumenes.
 3) docker volume create "nombre_volumen" :Creas un volumen.
 4) docker volume inspect "volume_name" :Datos del volumen. Entre ellos, viene la ruta local donde se almacenan los volumenes. A esta ruta solo podemos acceder como root (escribir sudo su y entraremos a nuestra consola como root). Damos cd para ponernos al inicio y luego cd y la ruta que aparece en el inspect y ahi veremos nuestro volumen.
@@ -116,3 +116,24 @@ Comandos extra:
 4) docker run --name nombre -P -e var1=mivar1 .... -d image_id :Crea y corre de una.
 
 ### Restart policies
+Estas politicas permiten controlar si los contenedores arrancaran de manera automatica o cuando docker reinicie. Aseguran que los containers vinculados se inicien en el orden correcto.
+
+Tipos de reinicio. Se especifican con el comando --restart
+1) no :No hay reinicio automatico(default)
+2) on-failure[:max-retries] :Reinicia si se detiene por un error que no sea una salida con estado zero. Opcional se puede limtar el numero de reinicios.
+3) always :Siempre reinicia si se detiene. Si es manualmente detenido solo reinicia cuando el docker daemon reinicia o cuando el container es manualmente reiniciado.
+4) unless-stopped :Como always solo que cuando el container sea detenido manual entonces no reiniciara.
+
+Notas:
+1) Si ponemos la opcion --restart always y despues ejecutamos para ver la terminal (docker exec -it container_id bash) y ponemos ps aux veremos nuestro container corriendo. Si damos kill al PID del container (kill 1, kill 2, etc) lo matara y volvera a levantarse de inmediato. Lo anterior se ve al ejecutar docker ps -a de nuevo y dira up to n seconds/minutes, un tiempo mas reciente que el inicial, pues.
+
+Comando ejemplo:
+1) docker create --name c1 -p 8080:80 --restart always image_id
+2) docker update --restart unless-stopped container_id :Este comando actualiza el metodo de reinicio de un container que ya esta corriendo. Lo actualiza del metodo que tenga al nuevo que es unless-stopped.
+
+### Otros comandos
+1) docker commit container_id,nombre imagen:TAG :Este comando crea una nueva imagen a partir de un container existente. Supon que tienes un container en el que hiciste cambios y creaste cosas, entonces puedes replicar esto y hacerlo una nueva imagen para seguir usandola sin tener que estar haciendo los movimientos otra vez. No es la mejor practica, mejor incluye todas las indicaciones en el dockerfile.
+2) docker :Muestra todos los comandos disponibles. Si anadimos --help nos dira como usarlo.
+3) docker logs container_id,nombre :Los logs de un container.
+4) docker rename nombre_container nombre_container2 :Renombra container
+5) docker top container_id,nombre :Procesos en el container corriendo. 
