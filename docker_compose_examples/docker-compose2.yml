@@ -1,10 +1,8 @@
 version: "3.9"
 services:
   web:
-    # Politica de reinicio, en este caso si falla y hasta 3 veces
-    restart: on-failure:3
-    # Especificamos la ruta donde esta su dockerfile
-    build: ./prueba/web
+    # Construimos mediante imagen, directamente
+    image: nginx:latest
     ports: 
       - "8080:80"
     volumes:
@@ -15,15 +13,7 @@ services:
     # Aseguramos que redis y web esten en la misma red
     links:
       - redis
-    depends_on:
-      # Especificamos que este container depende de redis, por lo que espera a que redis se levante
-      - redis
-    environment:
-      - VAR1=valor1
-    # env_file:
-    # # Tomamos las variables de un archivo
-    #   - ./config/vars.env
-  
+
   redis:
     image: redis
 

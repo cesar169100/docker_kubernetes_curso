@@ -12,11 +12,11 @@ sudo chmod 666 /var/run/docker.sock
 2) Tipear kubectl en el navegador y elegir la primera opcion de sus docs. Elegir el sistema operativo(linux en este caso) y la opcion de instalado "using native package management".
 3) Seguir el resto de la guia.
 ## minikube
-1) Herramienta para desplegar clusters de manera local.
+1) Herramienta para desplegar clusters de kubernetes de manera local.
 2) Tipear minikube y elegir minikube start de la pag oficial.
 3) Opciones default. Linux, arqu de 64, version estable y con descarga de binarios.
 4) A la hora de ejecutar el comando "sudo install minikube ..." la carpeta bin de la ruta /usr/local/bin podria no existir. Creala y vuelve a instalar. "sudo mkdir /usr/local/bin"
-5) Podria salir una especie de warning al ejecutar comandos minikube, en este caso, Docker CLI context "default" no encontrado. Ejecuta "docker context use default"
+5) Verifica con el comando "minikube version", podria salir una especie de warning al ejecutarlo, en este caso, Docker CLI context "default" no encontrado. Ejecuta "docker context use default"
 
 Notas:
 1) Al ejecutar el build, la imagen base no aparece en la lista del comando "docker images" por alguna razon. Es por la version de docker. Esto ya se soluciono.

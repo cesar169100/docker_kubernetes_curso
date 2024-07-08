@@ -11,6 +11,6 @@ RUN pip install /app/requirements.txt
 
 COPY src /app/src
 COPY main.py /app/main.py
-# Puerto de exposicion de fastapi o 8501 para streamlit
+# Puerto de exposicion 8008 de fastapi o 8501 para streamlit
 # EXPOSE 8008
 CMD ["python", "main.py"]
