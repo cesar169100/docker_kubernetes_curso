@@ -1,0 +1,13 @@
+# Forma de un manifest para definir un pod. Si ejecutamos este codigo con su kubectl apply -f 
+# pod.yaml y luego kubectl get all veremos el nuevo objeto tipo pod llamado nginx
+
+apiVersion: v1 # Version de la appi de kubernetes
+kind: Pod # Tipo
+metadata: # Datos adicionales
+  name: nginx
+spec: # Especifica la configuracion de los containers
+  containers:
+  - name: nginx
+    image: nginx:latest
+    ports:
+    - containerPort: 80
