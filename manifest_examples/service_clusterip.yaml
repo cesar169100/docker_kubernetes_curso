@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata: 
+  name: landingpage
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80 # El puerto donde se expone el container
+  selector: 
+    # Ponemos la etiqueta correspondiente para que pueda ser manejado por nuestro replicaset
+    # landingpages
+    app: webserver 

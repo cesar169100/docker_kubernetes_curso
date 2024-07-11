@@ -1,0 +1,17 @@
+# Este manifest incluye la creacion de un namespace y la creacion de un pod bajo ese ns
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: miespacio
+---
+apiVersion: v1
+kind: Pod
+metadata:
+   name: nginx
+   namespace: miespacio
+spec:
+  containers:
+  - name: nginx
+    image: nginx:latest
+    ports:
+    - containerPort: 80

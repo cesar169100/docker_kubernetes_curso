@@ -1,0 +1,27 @@
+# Ejemplo de configuracion de un Replication Controller
+apiVersion: v1
+kind: ReplicationController # Solo se indica que es otro tipo de objeto
+metadata: 
+   name: nginx # Hasta aqui casi igual que el pod.yaml
+spec:
+  # Las réplicas de un pod son múltiples instancias idénticas de ese pod ejecutándose 
+  # simultáneamente en un clúster de Kubernetes. En este caso solo pondremos una.
+  replicas: 2 
+  # El selector en el manifest de un Replication Controller especifica las etiquetas que debe 
+  # tener un pod para ser gestionado por ese controller. En este caso, el selector 
+  # project: nginx indica que el Replication Controller manejará los pods que tengan la 
+  # etiqueta project: nginx, asegurando que se mantenga el número deseado de réplicas de 
+  #esos pods.
+  selector: 
+    project: nginx
+  template: # El template va a tener lo mismo que el manifest de un pod
+    metadata:
+      name: nginx
+      labels: 
+        project: nginx # Debemos definirle al pod la misma etiqueta que viene en el selector
+    spec:
+      containers: 
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80

@@ -5,6 +5,10 @@ apiVersion: v1 # Version de la appi de kubernetes
 kind: Pod # Tipo
 metadata: # Datos adicionales
   name: nginx
+  namespace: miespacio # Agregamos el namespace bajo el cual se creara el pod
+  labels: # Agregamos mas metadata, aqui puede ser cualquier etiqueta
+    project: pagina_web
+    enviroment: testing
 spec: # Especifica la configuracion de los containers
   containers:
   - name: nginx

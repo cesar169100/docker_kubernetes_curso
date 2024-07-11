@@ -68,3 +68,50 @@ Unable to load cached images: loading cached images: stat /home/cesar/.minikube/
 - kubectl describe pod pod_name : Describe el pod.
 - NOTA: Un namespace en Kubernetes es una forma de dividir un único clúster Kubernetes en varios entornos virtuales. Cada namespace proporciona un espacio de nombres aislado para recursos. Uso: Gestiona recursos dentro de un clúster compartido, proporcionando aislamiento y organización para diferentes equipos o proyectos. En resumen, un perfil es para gestionar múltiples clústeres en Minikube, mientras que un namespace es para organizar recursos dentro de un solo clúster Kubernetes.
 # Video 28: Metadata, Labels y Selectors
+- Mismo codigo (pod.yaml) que el video anterior.
+- Los selectors nos permiten hacer referencia a un objeto de kubernetes usando etiquetas en vez de su nombre.
+- kubectl get pods --selector project=pagina_web : Busca los pods donde exista una etiqueta project con el vlor pagina_web y asi en vez de project se puede usar cualquier etiqueta que le hayamos definido
+- kubectl get pods --selector 'project in (pagina_web, otra_cosa)' : uno mas complejo, estos querys tambien aplican si es un get all.
+# Video 29: Reinicio de un Pod y Exec
+- Si lanzamos un pod con su contenedor y el proceso principal del contenedor muere o termina lo que iba a hacer, kubernetes podria intentar arrancarlo otra vez. Se recomienda crear un objeto que compruebe esas replicas, compruebe si esta vivo, elimine el pod y lo vuelva a crear si no esta "sano" y esos objetos se veran mas adelante. 
+- Supon que arrancas un pod con su manifest (kubectl apply -f pod.yaml), entonces como nos conectamos o ejecutamos un comando dentro de este pod? :
+kubectl exec nombre_pod comando : kubectl exec nginx ls (muestra los archivos)
+kubectl exec nombre_pod -c container_name comando : En caso de q nuestro pod tenga mas de un container.
+- kubectl -it exec pod_name bash : Abre la terminal del container. kubectl -it exec nginx bash
+- Recuerda que aqui aun no hay persistencia. Si creas un pod con un container(o mas), e instalas cosas y borras el pod tons todo se pierde.
+- Cada vez que kubernetes mediante el sheduler intenta levantar un pod de nuevo lo crea desde cero pero tiene criterios de tiempo para tardarse mas a cada intento.
+# Video 30: Replication Controller
+- Controlar el numero de replicas que van a correr de un pod. Se asegura que un pod o un grupo homogeneo de estos este siempre corriendo y disponible. Componente de Kubernetes que asegura que un número específico de réplicas de un pod esté ejecutándose en todo momento. Monitorea los pods y, si alguno falla o es eliminado, crea nuevos pods para mantener el número deseado de réplicas. Ayuda a gestionar la escalabilidad y disponibilidad de las aplicaciones en un clúster de Kubernetes.
+- El codigo de este video esta en /manifest_examples/replication_controller.yaml
+- kubectl get rc : Vemos nuestros objetos tipo replication controller (rc)
+- kubectl describe rc nombre_rc : Describe el rc
+# Video 31: Replicaset
+Es lo mismo que el replication controller solo que Utiliza un selector de etiquetas más flexible que soporta expresiones de igualdad e inigualdad y ReplicaSet ofrece mayor flexibilidad y es la opción recomendada en versiones actuales de Kubernetes.
+- El codigo del video es /manifest_examples/replicaset.yaml
+- kubectl get rs : Lista de los replicaset
+# Video 32: Namespaces
+- Un namespace en Kubernetes es una forma de dividir un único clúster Kubernetes en varios entornos virtuales. Cada namespace proporciona un espacio de nombres aislado para recursos. Uso: Gestiona recursos dentro de un clúster compartido, proporcionando aislamiento y organización para diferentes equipos o proyectos.
+- kubectl get ns : lista los namespaces
+- kubectl create ns nombre_espacio : Crea un namespace
+- kubectl get all -n nombre_espacio : Asi listas los recursos definidos en un ns, recuerda q cada ns es un entorno virtual dentro del mismo cluster.
+- En /manifest_examples/namespace.yaml hay un ejemplo de un manifest para crear un namespace.
+- Modificamos nuestro pod.yaml para incluir el namespace bajo el cual se creara el pod
+- kubectl get pods -A : Todos los pods independientemente de a q ns pertenezca
+- kubectl delete ns name_space : Borra ese ns junto con lo que tenga dentro
+- kubectl apply -f .  : Aplica todos los manifest del directorio en el que estas y resuelve el orden en el que deben ir. Aun asi mejor hacerlo por separado
+- En el codigo ns_pod.yaml viene como crear el namespace y el pod juntos.
+# Video 33: Servicios
+- Como acceder al servicio que hay corriendo dentro de un pod? Para esos son los servicios. Una forma ya conocida para entrar es con minikube ssh pues nuestro cluster es local. Para hacerlo mediante kubectl podemos acceder a la descripcion del pod (kubectl describe pod pod_name), donde pod_name lo podemos ver mediante kubectl get all, y en esa descripcion aparece la IP. Si accedemos con minikube ssh al pod u hacemos un curl IP entonces accederemos a la pagina del container. Otra forma mas facil de obtener la IP es con kubectl get all -o wide
+- Acceder al pod mediante IP no es conveniente. En este caso solo hay un pod con una replica, que tal si hay 100 replicas cada una con IP diferente, en cual se estara ejecutando?
+- Un Servicio en Kubernetes es un objeto que define una forma lógica para acceder a un conjunto de pods. Proporciona un punto de acceso estable (una IP y un puerto) para los pods, independientemente de su ciclo de vida. Esto permite la comunicación interna y externa con los pods sin preocuparse por los cambios en sus direcciones IP individuales.
+- kubectl expose rs nombre --port puerto : Crea un servicio para un replicaset(rs) y especifica el puerto de exposicion. Ej. kubectl expose rs landingpage --port 80
+- Lo anterior genera la IP fija mediante la que debemos acceder al pod. Esta IP es accesible desde dentro del pod (minikube ssh)
+- kubectl get svc : Lista los servicios
+- kubectl delete svc service_name : Borra el servicio
+- El manifest para levantar un servicio como hasta ahora es service_clusterip.yaml
+- Cuando levantamos este servicio es de tipo ClusterIP, este solo se accede desde dentro del cluster. El tipo NodePort permite el acceso desde fuera del cluster, el codigo es nodeport.yaml
+- Una vez creado el NodePort, si le das kubectl get all -o wide podras ver el mapeo que hace, del puerto del pod al de afuera, tipo 80:31483/TCP. Podemos entonces acceder a los servicios desde fuera a traves del puerto 31483
+- Seria a traves de la ip de minikube(minikube ip) y el puerto especificado (curl minikube_ip:31483)
+- Tambien existe el servicio tipo LoadBalancer, que en algun momento generaria una IP publica(no solo el puerto) para conectar a nuestro cluster. Se vera a detalle cuando se vea aws y su manifest es loadbalancer.yaml
+- El otro tipo es ExternalName, su manifest es externalname.yaml. Sirve para migraciones
+# Video 34: Deployments

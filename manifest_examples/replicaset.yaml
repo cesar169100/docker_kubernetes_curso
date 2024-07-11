@@ -1,0 +1,19 @@
+apiVersion: apps/v1 # Cambio
+kind: ReplicaSet
+metadata: 
+  name: landingpage
+spec:
+  replicas: 2
+  selector:
+    # Metodo de etiquetado mas avanzado que permite el uso de expresiones regulares, buscar en
+    # cadenas, listas, etc
+    matchLabels: 
+      app: webserver
+  template:
+    metadata:
+      labels:
+        app: webserver
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
