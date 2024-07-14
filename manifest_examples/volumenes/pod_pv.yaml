@@ -1,0 +1,35 @@
+# Generamos un pod con un volumen asociado
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pv-pod
+spec: 
+  volumes: 
+  # Especificamos el Claim que servira para conectar con nuestro PV
+  - name: pv-storage
+    persistentVolumeClaim:
+      claimName: claim-001
+  containers:
+  - name: pv-container
+    image: nginx:1.7.9
+    ports:
+    - containerPort: 80
+    # Especificamos la ruta dentro del container donde ira el volumen
+    volumeMounts:
+    - mountPath: "/usr/share/nginx/html"
+      name: pv-storage
+
+# Una vez creado el pod, si hacemos kubectl exec -it pod_name bash (pod_name=pv-pod en este 
+# caso) y nos vamos al directorio del volumen (/usr/share/nginx/html) veremos que esta vacio.
+# Creamos un archivo prueba.txt y borramos el pod. Crea nuevamente el pod con este archivo, es
+# un pod diferente pero igual tendra acceso al PV y si nos vamos otra vez a su bash veremos que
+# el archivo creado aun esta en la ruta en que se monto
+# Si eliminamos el pod y el pvc, en teoria nuestro archivo deberia exixtir aun en el pv, sin embargo
+# este pasa a status released (ya no available) por lo que debemos destruir el pv tambien
+# y volverlo a crear para que vuelva a estar available
+# NOTA: La ruta mountPath: /usr/share/nginx/html de nuestro container esta ligada a la ruta
+# hostPath: /mnt/data/pv-001 que se encuentra en nuestro nodo y que fue definida en el 
+# manifest del pv (persistent_volume.yaml), entonces si nos conectamos a nuestro nodo
+# (minikube ssh -p perfil_name, en caso de que haya un perfil, si no, solo minikube ssh),
+# y vamos a la ruta hostPath, ahi estara nuestro archivo creado. Como tenemos la politica
+# Reclaim Policy: Retain entonces es necesario borrar nuestro archivo desde aqui (rm archivo) 

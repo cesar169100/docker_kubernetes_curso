@@ -115,3 +115,29 @@ Es lo mismo que el replication controller solo que Utiliza un selector de etique
 - Tambien existe el servicio tipo LoadBalancer, que en algun momento generaria una IP publica(no solo el puerto) para conectar a nuestro cluster. Se vera a detalle cuando se vea aws y su manifest es loadbalancer.yaml
 - El otro tipo es ExternalName, su manifest es externalname.yaml. Sirve para migraciones
 # Video 34: Deployments
+- Un Deployment en Kubernetes es un objeto que gestiona la creación, actualización y escalado de un conjunto de pods. Proporciona un mecanismo para implementar aplicaciones de manera declarativa, asegurando que el estado actual del clúster coincida con el estado deseado especificado en el Deployment. También facilita las actualizaciones controladas y los rollbacks automáticos.
+- Objeto que nos permite desplegar un replica set , que a su vez despliega una serie de pods y se puede controlar mediante un comando rollout
+- El manifest de un deployment es deployment.yaml
+- Si cambiamos, por ejemplo en el deployment.yaml la version de nginx y volvemos a dar apply se detendran los pods y el replicaset de la version anterior, pero no se elimina el replicaset; se genera un segundo replicaset y se levantan los pods, pero el primer replicaset sigue ahi solo que no esta corriendo.
+- kubectl rollout history deployment deploy_name : Versiones por las que ha pasado el deployment. Es necesario agregar comentarios para tener buen detalle de que version es y porque cambio, etc. Se vera despues
+- Si al comando anterior agregamos --revision=1, porjemlo, obtendremos mas detalles.
+- kubectl rollout undo deployment deploy_name --to-revision=2 : Se vuelve a activar la version 2 del deploy, pero cambia el numero de las revisiones y se vuelve confuso. Es necesario agrgar descripciones. Como se activo la 2, esta desaparace y se convierte en la ultima revision
+- kubectl rollout status deployment deploy_name : Status del deploy, util cuando son varias cosas las que se deben desplegar y queremos ur viendo como evoluciona el status
+- kubectl annotate deployment deploy_name kubernetes.io/change-cause="Version 1.20" : Por ejemplo, cambiamos la etiqueta de la revision para que sea mas claro. Este cambio aplica para la version/revision que esta activa. Con esto ya es mas facil los undo porque el mensaje se mantiene, siempre sabes con que revision/version estas tratando.
+# Video 35: Volumenes
+- Empezamos con el sistema de volumenes de kubernetes.
+- Un PersistentVolume (PV) en Kubernetes es un recurso de almacenamiento abstracto que proporciona una manera de gestionar el almacenamiento persistente para los pods. Es un recurso mas del cluster, al igual que un nodo es un recurso del cluster. A diferencia del almacenamiento temporal que se elimina cuando un pod se reinicia, un PV persiste más allá de la vida útil de cualquier pod, lo que permite que los datos permanezcan disponibles y consistentes entre reinicios y reprogramaciones de pods. Los PVs son gestionados de manera independiente del ciclo de vida de los pods, proporcionando almacenamiento duradero para aplicaciones que lo necesiten.
+- Los PersistentVolumes (PVs) pueden ser provisionados de dos maneras:
+Static Provisioning: Los administradores crean manualmente los PVs.
+Dynamic Provisioning: Kubernetes crea automáticamente los PVs según sea necesario, utilizando StorageClasses para definir cómo se debe aprovisionar el almacenamiento.
+- Un PersistentVolumeClaim (PVC) en Kubernetes es una solicitud de almacenamiento persistente realizada por un usuario. Los PVCs permiten a los usuarios solicitar tamaños específicos y características de almacenamiento sin preocuparse por los detalles de aprovisionamiento. Kubernetes vincula automáticamente el PVC a un PersistentVolume (PV) adecuado que cumple con los requisitos de la solicitud.
+- "binding" es el proceso de enlazar o asociar un PVC a un PV. Cuando un PVC es creado, Kubernetes busca un PV disponible que cumpla con las especificaciones solicitadas en el PVC (como tamaño y características de almacenamiento) y los enlaza. Este binding asegura que el PVC tenga acceso al almacenamiento persistente proporcionado por el PV. Una vez que un PV está enlazado a un PVC, ese PV no puede ser enlazado a otro PVC hasta que el PVC actual sea liberado.
+- El codigo esta en manifest_examples/volumenes/persisten_volume.yaml
+- kubectl get pv : Ve los persisten volumes (pv)
+- De los AccessModes y ReclaimPolicy se habla en el codigo
+- Si el STATUS de un PV es available es que ningun PVC esta ligado (binding) a el, de lo contrario el STATUS sera bound.
+- StorageClasses: Es un objeto que proporciona una manera de describir las clases de almacenamiento que están disponibles para los PersistentVolumes (PVs) dinámicos en un clúster. Define cómo deben ser aprovisionados y configurados los PVs solicitados a través de PersistentVolumeClaims (PVCs). Esto permite a los usuarios solicitar almacenamiento con características específicas (como tipo, tamaño, rendimiento) sin necesidad de conocer los detalles de la infraestructura subyacente de almacenamiento.
+- Codigo para crear el pvc es persistent_volume_claim.yaml
+- Codigo para asociar un PV a un pod en el codigo pod_pv.yaml junto con notas importantes de la clase.
+- Lo visto hasta ahora es muy manual, es mejor los sistemas de aprovisionamiento dinamico q se veran mas adelante.
+# Video 36: Configmaps

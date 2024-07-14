@@ -1,0 +1,16 @@
+# Hacemos una solicitud para que se nos de un volumen storageClass tipo manual, con accessMode
+# RWO y de un Giga. Si lo lanzamos asi, se quedara buscando y nunca encontrara un volumen con
+# esas caracteristicas. Hay que especificar en este manifest una solicitud hacia un volumen
+# que si exista, en este caso un volumen tipo ReadWriteMany con 2Gi si existe por lo tanto
+# conseguira hacer bound de este pvc con el pv
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: claim-001
+spec:
+  storageClassName: manual
+  accessModes:
+  - ReadWriteMany
+  resources: 
+    requests:
+      storage: 2Gi

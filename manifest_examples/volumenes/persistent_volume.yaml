@@ -1,0 +1,47 @@
+# Aprovisionamiento estatico, es decir, creacion manual
+apiVersion: v1
+kind: PersistentVolume
+metadata: 
+  name: pv-001
+spec:
+  # Cuando se define la clase de almacenamiento como "manual" en Kubernetes, significa que 
+  # los PersistentVolumes (PVs) asociados a esta clase deben ser aprovisionados manualmente 
+  # por un administrador del clúster. Esto implica que no se utilizará aprovisionamiento 
+  # dinámico y que los PVs deben ser creados de forma estática, fuera del ciclo normal de 
+  # solicitud y asignación de recursos a través de PersistentVolumeClaims (PVCs).
+  storageClassName: manual # Define la clase de almacenamiento como "manual".
+  capacity:
+    storage: 2Gi # Cpacidad de almacenamiento
+  # Que el modo del volumen sea "Filesystem" significa que el almacenamiento del 
+  # PersistentVolume (PV) se presenta al contenedor como un sistema de archivos, permitiendo 
+  # operaciones típicas de archivos como lectura, escritura y modificación directamente en el 
+  # sistema de archivos. Este es el modo más común y se usa para almacenar archivos y 
+  # directorios estructurados.
+  volumeMode: Filesystem
+  accessModes:
+  # Que el PV puede ser montado como lectura/escritura por un solo nodo a la vez, especificado 
+  # por el acceso ReadWriteOnce (RWO), significa que el PersistentVolume (PV) puede ser montado
+  # y usado en modo lectura/escritura por un único nodo en el clúster de Kubernetes en 
+  # cualquier momento(el primer nodo que haga una peticion). Otros nodos no pueden montar el 
+  # mismo volumen simultáneamente en modo lectura/escritura. Esto asegura que no haya conflictos 
+  # de acceso concurrente al mismo volumen desde múltiples nodos. La forma de accesMode mas 
+  # comun es ReadWriteMany (RWX), es lo mismo pero para varios nodos.
+  #- ReadWriteOnce
+  - ReadWriteMany
+  hostPath: 
+    # Volumen ligado a un dir concreto de nuestro host. En este caso el host es nuestro nodo.
+    # Como solo hay un nodo, de momento no hay problema. Este directorio se crea en el nodo
+    # y aqui se guarda el contenido del volumen
+    path: "/mnt/data/pv-001"
+
+# Reclaim Policy: especifica qué hacer con los recursos del almacenamiento persistente cuando 
+# un PersistentVolume (PV) ya no está reclamado por ningún PersistentVolumeClaim (PVC). 
+# Tipos:
+# 1) Retain: Cuando un PVC que estaba usando un PV es eliminado, Kubernetes no eliminará 
+# automáticamente los datos del PV. En su lugar, los recursos del almacenamiento persistente 
+# (como el volumen en un proveedor de almacenamiento externo) permanecen intactos y deben ser 
+# limpiados manualmente si es necesario.
+# 2) Delete: Cuando un PVC que estaba usando un PV es eliminado, Kubernetes también eliminará 
+# automáticamente los datos del PV. Esto implica que los recursos del almacenamiento 
+# persistente asociados al PV serán liberados y eliminados según las reglas de limpieza 
+# definidas por el proveedor de almacenamiento.
