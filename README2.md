@@ -141,3 +141,13 @@ Dynamic Provisioning: Kubernetes crea automáticamente los PVs según sea necesa
 - Codigo para asociar un PV a un pod en el codigo pod_pv.yaml junto con notas importantes de la clase.
 - Lo visto hasta ahora es muy manual, es mejor los sistemas de aprovisionamiento dinamico q se veran mas adelante.
 # Video 36: Configmaps
+- Un ConfigMap nos da una manera de inyectar datos de configuracion a un pod
+- Es un objeto que se utiliza para almacenar datos de configuración en pares clave-valor. Permite separar la configuración del código de la aplicación, facilitando la administración y modificación de configuraciones sin necesidad de recompilar la imagen del contenedor. Los datos almacenados en un ConfigMap pueden ser utilizados por los pods como variables de entorno, archivos de configuración montados en volúmenes, o argumentos de línea de comando.
+- kubectl get cm : Obtener nuestros configmaps
+- Kubectl create configmap configmap_name --from-literal var1=valor1 --from-literal var2=valor2 ... : Crea el mas sencillo de los configmaps, con nombre configmap_name, solo una relacion clave-valor o en forma mas sencilla, define variables. (No admite '_' en los nombres)
+- kubectl describe cm configmap_name : Mas info del cm
+- Codigo de un pod que toma una variable de ambiente de un configmap: pod_cm_literal.yaml, junto con notas adicionales de la clase
+- Vamos a tener dos archivos de configuracion, default.conf y test.conf. El objetivo es inyectar estos archivos en un pod, es decir, darle la configuracion al container especificada por uno de estos archivos.
+- kubectl create cm nginx-config-dir --from-file=manifest_examples/nginx : Crea un ConfigMap en Kubernetes llamado nginx-config-dir. Este ConfigMap se genera a partir de todos los archivos contenidos en el directorio manifest_examples/nginx, y cada archivo en ese directorio se convierte en una clave dentro del ConfigMap, con su contenido como valor correspondiente.
+- El pod que se levanta con el configmap anterior es pod_cm_file.yaml y tiene notas importantes de la clase.
+# Video 37: Secrets

@@ -1,0 +1,31 @@
+# En este manifest se define un pod, que tendra un container cuyas variables de ambiente
+# se toman desde un volumen ConfigMap
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-cm
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    env: # Aqui se pueden definir vars de entorno directamente
+    # - name: foo
+    #   value: var1
+    # Tambien se puede definir una variable de ambiente con nombre ENVIROMENT_TEST que obtiene
+    # su valor de un configmap de nombre test-cm y nombre de la variable val1
+    - name: ENVIROMENT_TEST
+      valueFrom:
+        configMapKeyRef:
+          name: test-cm
+          key: val1
+    # Podemos agregar mas si nuestro configmap tiene otras definidas
+    # - name: ENVIROMENT_TEST2
+    #   valueFrom:
+    #     configMapKeyRef:
+    #       name: test-cm
+    #       key: val2
+
+# Si entramos a la terminal del pod (kubectl exec -it nginx-cm bash) y damos env ahi 
+# estara nuestra variable de entorno ENVIROMENT_TEST=valor1. Si vuelves a ejecutar este manifest 
+# con mas envs dara error, hay q eliminarlo y volverlo a crear para que salga con las 
+# nuevas envs

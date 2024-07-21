@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-cm-file
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    # Hacemos referencia a un volumen que se llama config-volume (solo por referencia) y se 
+    # monta en la direccion mountPath(Ruta en el contenedor donde se monta el volumen). 
+    # Recordemos que un configmap es un volumen
+    volumeMounts:
+    - name: config-volume
+      mountPath: /etc/nginx/conf.d/
+  # Ahora debemos definir el volumen referenciado arriba
+  volumes:
+  - name: config-volume
+    configMap:
+    # Nuestro configmap creado a partir de los files
+      name: nginx-config-dir
+
+# NOTA: El ConfigMap nginx-config-dir con n configuraciones se monta en un único pod, y todas 
+# las configuraciones contenidas en él estarán disponibles en la ruta especificada 
+# (/etc/nginx/conf.d/). No se crean múltiples pods; en cambio, el pod único tiene acceso a 
+# todos los archivos de configuración del ConfigMap montado en el volumen.
+# Con esto podriamos tener varios entornos y solo una imagen.
+# NOTA2: Al montar múltiples archivos de configuración en el contenedor, ambos entornos no 
+# están activos simultáneamente. Los archivos de configuración se encuentran disponibles en 
+# el sistema de archivos del contenedor, pero solo el archivo de configuración que está 
+# incluido en el archivo principal de configuración será utilizado.
+# Puedes tener múltiples configuraciones disponibles y activar la que necesites modificando 
+# el archivo principal de configuración y recargando. Esto te permite flexibilidad para cambiar
+# configuraciones sin necesidad de reconstruir o redeployar el contenedor, pero solo una 
+# configuración activa a la vez según lo que se haya incluido en el archivo principal de 
+# configuración
+# NOTA3: Algunas aplicaciones comunes que utilizan este enfoque incluyen:
+# Servidores web (como nginx, Apache)
+# Bases de datos (como MySQL, PostgreSQL)
+# Aplicaciones Java (con archivos de configuración .properties o .yaml)
+# Aplicaciones Node.js (con archivos de configuración .json o .env)
