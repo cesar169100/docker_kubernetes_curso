@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-secret-envar
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.7.9
+    env:
+    - name: SECRET_USERNAME
+      valueFrom:
+        secretKeyRef:
+          name: credenciales # Nombre del secret
+          key: username # username.txt en el ejemplo de la clase
+    - name: SECRET_PASSWORD
+      valueFrom:
+         secretKeyRef:
+           name: credenciales
+           key: password # pass.txt en el ejemplo de la clase
+
+# Y pues ya solo accedes a la terminal del pod, le das env y ahi deben estar. Si actualizas el
+# secret entonces el container del pod se actualiza en automatico con estos cambios, es decir,
+# no es necesario matar al pod y volverlo a crear

@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-request-limits
+spec:
+   containers:
+   - name: web
+     image: nginx
+     resources: 
+       requests:
+         # Recursos minimos para el container
+         memory: "1G"
+         cpu: "1"
+       limits:
+         memory: "1.2G"
+         cpu: "2"
+
+# Si no hay recursos suficientes, entonces el Pod se queda en status Pending y nunca se crea.
+# Para volver a especificar recursos es necesario eliminar el Pod y volverlo a lanzar. Si lo
+# hicieramos desde un replication controller o replicaset si se podria hacer al cambio en
+# caliente
+# Asignar "1 CPU" en Kubernetes no se refiere a una cantidad de tiempo específica, sino a la 
+# capacidad de procesamiento equivalente a un núcleo de CPU durante un intervalo de tiempo 
+# dado. Entonces, asignar "1 CPU" a un contenedor significa que, en promedio, el contenedor 
+# puede usar el 100% de un núcleo de CPU durante cualquier período de tiempo. En términos de 
+# rendimiento: Si tienes una CPU física de 2.5 GHz, entonces 1 CPU en Kubernetes permitiría 
+# al contenedor usar hasta 2.5 GHz de procesamiento en promedio.
