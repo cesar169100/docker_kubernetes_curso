@@ -1,0 +1,17 @@
+# PVC  para el volumen que sera compartido entre los pods
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: www-compartido
+spec: 
+  storageClassName: manual
+  accessModes:
+  - ReadWriteOnce
+  volumeName: www-compartido # Especificamos exactamente con que pv hacer bound
+  resources:
+    requests:
+      storage: 1Gi
+
+# En el statefulset_volume.yaml se crean claims para cada pod, pero ahorita queremos uno para
+# un volumen que sera compartido por todos. Necesita crearse a parte. Los pvc para los pv de
+# cada pod individual se crean dinamicamente con statefulset_volume.yaml

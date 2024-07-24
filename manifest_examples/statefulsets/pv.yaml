@@ -1,0 +1,57 @@
+# Aqui estan los volumenes necesarios para statefulset_volume.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: www-web-volumes-0
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data/www-0"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: www-web-volumes-1
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data/www-1"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: www-web-volumes-2
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data/www-2"
+---
+# Volumen compartido entre los pods
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: www-compartido
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data/www-compartido"

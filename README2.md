@@ -169,3 +169,11 @@ Lo anterior crea un volumen secret a partir de esos archivos con info sensible.
 - apt update y apt install stress : Instala stress que es una herramienta para probar la cpu y memoria de una maquina. El codigo que levanta un pod con request y limits es pod_request.yaml
 - apt install htop : Herramienta para ver los recursos que se consumen en tiempo real
 # Video 39: Statefulsets
+- Gestiona la implementación y el escalado de un conjunto de Pods y proporciona garantías sobre el orden y la unicidad de estos Pods. Al igual que un Deployment, un StatefulSet administra pods que se basan en una especificación de contenedor idéntica. A diferencia de una Deployment, un StatefulSet mantiene una identidad fija para cada uno de sus Pods. Estos pods se crean a partir de la misma especificación, pero no son intercambiables: cada uno tiene un identificador persistente que mantiene durante cualquier reprogramación.
+- kubectl scale --replicas num_replicas tipo_objeto nombre_objeto: Por ejemplo, kubectl scale --replicas 4 statefulset web, sube o baja el num de replicas a 4 para el statefulset llamado web.
+- Codigo manifest de un statefulset es statefulset.yaml
+- Se usan cuando un pod necesita acceder a otro (dentro de ellos mismos)
+- Los volumenes en este contexto son uno para cada Pod. Se crean los volumenes y el statefulset se encarga de contruir los claim. Codigo statefulset_volume.yaml
+- El comando rollout tambien se puede usar aqui.
+- Para definir volumenes compartidos entre los pods ver codigo pv.yaml y pv_claim_compartido.yaml.
+# Video 40: Clusters multi nodo y pod affinity/antiaffinity
