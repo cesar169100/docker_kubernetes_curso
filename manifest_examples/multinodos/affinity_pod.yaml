@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: affinity-required
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        # Terminos a cumplir para la asignacion
+        nodeSelectorTerms:
+        - matchExpressions:
+          # En la expresion key 
+          - key: kubernetes.io/os
+            operator: In # busque (Hay operadores igual, and, or, In etc)
+            values:
+            # este valor. Aqui tambien podria ser una lista(queremos nodo linux)
+            - linux
+      preferredDuringSchedulingIgnoredDuringExecution:
+        # Lista de preferencias. weight es el orden de importancia de cada preferecia. Aqui es 
+        # uno pues solo hay una preferencia
+      - weight: 1
+        preference:
+          # Nuestra primer preferencia es que haga match de key con el valor dado. La misma
+          # especificacion del ejemplo anterior
+          matchExpressions:
+          # En la expresion key 
+          - key: kubernetes.io/hostname
+            operator: In # busque (Hay operadores igual, and, or, In etc)
+            values:
+            # este valor. Aqui tambien podria ser una lista
+            - minikube-m04 # Este nodo no existe, aun asi lo lanza en uno q si existe
+      - weight: 2
+        preference:
+          matchExpressions:
+          - key: kubernetes.io/hostname
+            operator: In 
+            values:
+            - minikube-m03 
+  containers:
+  - name: nginx
+    image: nginx:latest
+
+# requiredDuringSchedulingIgnoredDuringExecution: El scheduler no puede programar el Pod a 
+# menos que se cumpla la regla. Esto funciona como nodeSelector, pero con una sintaxis más 
+# expresiva.
+# preferredDuringSchedulingIgnoredDuringExecution: El scheduler intenta encontrar un nodo que 
+# cumpla la regla. Si un nodo coincidente no está disponible, el programador aún programa el 
+# Pod.

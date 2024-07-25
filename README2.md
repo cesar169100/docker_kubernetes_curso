@@ -177,3 +177,16 @@ Lo anterior crea un volumen secret a partir de esos archivos con info sensible.
 - El comando rollout tambien se puede usar aqui.
 - Para definir volumenes compartidos entre los pods ver codigo pv.yaml y pv_claim_compartido.yaml.
 # Video 40: Clusters multi nodo y pod affinity/antiaffinity
+- minikube start --nodes numero : Lanzar cierta cantidad de nodos con minikube. En el primer nodo estaran los componentes de kubernetes y en los demas solo de computo
+- kubectl get nodes: Listar nodos
+- kubectl get nodes --show-labels : Vemos las etiquetas que nos ayudaran a identificar cada nodo y asi asignar un pod a un nodo por su nombre. Imagina que tenemos un nodo con gpu y los demas no, entonces seria conveniente asignar un pod con un proceso muy pesado a ese nodo en particular.
+- Flexibilidad: Affinity/Anti-Affinity: Permiten reglas más complejas y condicionales, como "preferir pero no requerir" ciertas condiciones.
+nodeSelector: Solo permite un mapeo directo y rígido entre etiquetas de nodos y pods.
+- Control de Distribución: Affinity: Permite distribuir cargas de trabajo para evitar la concentración en un solo nodo.
+Anti-Affinity: Permite evitar que ciertos pods se ejecuten juntos en el mismo nodo, mejorando la resiliencia y el balanceo de carga.
+- Gradual Enforcement:Affinity/Anti-Affinity: Ofrecen tanto reglas "preferentes" (soft) como "requeridas" (hard), lo que proporciona mayor control sobre la colocación.
+nodeSelector: Solo soporta reglas "requeridas".
+- Uso de Topologías:Affinity/Anti-Affinity: Pueden usar topologías como zonas de disponibilidad, racks o regiones, no solo nodos individuales.
+nodeSelector: Se limita a etiquetas de nodos sin considerar la topología del clúster.
+- Codigos para levantar Pod y asignarle un nod nodeselector.yaml y affinity_pod.yaml
+# Video 41: Daemonsets
