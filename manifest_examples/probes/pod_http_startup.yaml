@@ -1,0 +1,18 @@
+# Este pod tiene un probe startup(ver si ya inicio) con metodo http Get
+apiVersion: v1
+kind: Pod
+metadata: 
+  name: startup-http
+spec:
+  containers:
+  - name: nginx
+    image: nginx:latest
+    startupProbe:
+      httpGet:
+        path: /
+        port: 80 
+      initialDelaySeconds: 10
+      periodSeconds: 5
+
+# Este probe nos permite que el resto de probes dependan de este, debe ser el primero. Una vez
+# que se ejecute y salga bien 3 veces entonces la prueba startup estara ok

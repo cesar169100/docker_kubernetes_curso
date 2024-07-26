@@ -1,0 +1,22 @@
+# Este pod tiene un probe readinness(ver si ya recibe trafico) con metodo http Get
+apiVersion: v1
+kind: Pod
+metadata: 
+  name: readiness-http
+spec:
+  containers:
+  - name: nginx
+    image: nginx:latest
+    readinessProbe:
+      httpGet:
+        path: /
+        port: 80 
+      initialDelaySeconds: 20
+      periodSeconds: 5
+
+# Este tipo de probe(readiness) esperara los 20s luego enviara la peticion, si ok, esperara 5s
+# y volvera a lanzar la peticion, vuelve a esperar 5s..., asi unas 3 veces que es lo que 
+# kubelet hace y si las 3 ok entonces ya el status del pod sera running
+# Si estos chequeos fallan, kubelet no reiniciara el pod pues el pod esta vivo, es decir,
+# el proceso principal. El readinnes solo determina que, aunque este vivo, no esta READY para
+# aceptar peticiones

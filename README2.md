@@ -190,3 +190,33 @@ nodeSelector: Solo soporta reglas "requeridas".
 nodeSelector: Se limita a etiquetas de nodos sin considerar la topología del clúster.
 - Codigos para levantar Pod y asignarle un nod nodeselector.yaml y affinity_pod.yaml
 # Video 41: Daemonsets
+- Tipo de controlador que asegura que una copia de un pod se ejecute en cada nodo del clúster. Se utiliza comúnmente para implementar tareas de administración en cada nodo, como monitoreo, registro y redes. Algunos usos son monitoreo de nodos, coleccion de logs. Ejemplo en daemonset.yaml
+- kubectl get ds : Obtener daemonsets
+# Video 42: Probes
+- Los probes son mecanismos utilizados para verificar el estado de los pods. Existen tres tipos principales de probes:
+Liveness Probe:
+        Propósito: Verifica si el contenedor está en funcionamiento.
+        Acción: Si la probe falla, el contenedor se reinicia.
+Readiness Probe:
+        Propósito: Verifica si el contenedor está listo para aceptar tráfico.
+        Acción: Si la probe falla, el contenedor se elimina de los endpoints del servicio.
+Startup Probe:
+        Propósito: Verifica si el contenedor ha iniciado correctamente.
+        Acción: Si la probe falla, el contenedor se reinicia. Este tipo de probe es útil para aplicaciones con tiempos de inicio largos.
+
+- Métodos Comunes de Probes
+HTTP Probes:
+        Envía solicitudes HTTP GET a un contenedor.
+        Configurado con una URL y espera un código de estado 200-399.
+TCP Probes:
+        Intenta abrir una conexión TCP en el contenedor.
+        Configurado con un puerto.
+Exec Probes:
+        Ejecuta un comando en el contenedor.
+        Configurado con el comando a ejecutar y espera un código de salida 0.
+
+Estas probes se configuran en el manifiesto de los pods y ayudan a Kubernetes a gestionar la salud y disponibilidad de las aplicaciones.
+- Si entras al bash de un pod y eliminas su proceso principal (kill -15 1) matas al pod y esto tiene como consecuencia que kubelet en automatico vuelva a lanzar el pod. Esta es la forma principal en la que kubernetes decide reiniciar un pod, cuando el proceso principal a muerto.
+- kubectl logs -f pod_name : logs del pod
+- Codigos de probes en carpeta probes.
+- Las probes no tienen sentido en un pod que ejecuta una tarea única y luego termina, como un script de Python que realiza un proceso y finaliza. Las probes son más útiles para aplicaciones de larga duración que deben estar siempre disponibles y responder correctamente a las solicitudes.

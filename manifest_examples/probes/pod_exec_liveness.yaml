@@ -1,0 +1,26 @@
+# Pod con un chequeo de liveness via comando (exec)
+apiVersion: v1
+kind: Pod
+metadata:
+  name: liveness-exec
+  labels:
+    test: liveness
+spec:
+  containers:
+  - name: nginx
+    image: nginx:latest
+    # Ejecutaremos prueba liveness tipo exec
+    livenessProbe:
+      exec:
+        # Definimos la instruccion
+        command:
+        - curl # Comando
+        - localhost # Primer argumento, si hay mas se ponen en las siguientes lineas
+      # Tiempo de espera antes de iniciar los chequeos
+      initialDelaySeconds: 15
+      # Tiempo entre un chequeo y otro 
+      periodSeconds: 5
+
+# Cuando levantemos este pod podemos ir a los logs y ver q en efecto cada 5s se ejecuta el 
+# curl. Si queremos forzar el fallo podemos entrar al bash del pod y eliminar curl (which curl
+# nos da la ruta y luego rm ruta/de/curl), esto provoca error y reinicia el pod

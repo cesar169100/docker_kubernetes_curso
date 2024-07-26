@@ -1,0 +1,39 @@
+# Este pod tiene todas las probes con metodo http Get. Se crea un servicio para acceder
+apiVersion: v1
+kind: Pod
+metadata: 
+  name: all-http
+  labels:
+    service: nginx # Para asociar al servicio
+spec:
+  containers:
+  - name: nginx
+    image: nginx:latest
+    readinessProbe:
+      httpGet:
+        path: /
+        port: 80 
+        # Etiqueta para poder ver las peticiones con mas claridad
+        httpHeaders:
+        - name: User-Agent
+          value: "readiness-Probe"
+      initialDelaySeconds: 10
+      periodSeconds: 5
+    livenessProbe:
+      httpGet:
+        path: /
+        port: 80
+        httpHeaders:
+        - name: User-Agent
+          value: "liveness-Probe" 
+      initialDelaySeconds: 10
+      periodSeconds: 5
+    startupProbe:
+      httpGet:
+        path: /
+        port: 80 
+        httpHeaders:
+        - name: User-Agent
+          value: "startup-Probe"
+      initialDelaySeconds: 10
+      periodSeconds: 5

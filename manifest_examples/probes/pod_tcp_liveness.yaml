@@ -1,0 +1,18 @@
+# Aqui se levanta un pod con una prueba liveness tipo TCP
+apiVersion: v1
+kind: Pod
+metadata: 
+  name: liveness-tcp
+spec:
+  containers:
+  - name: nginx
+    image: nginx:latest
+    livenessProbe:
+    # Comprueba si el puerto 80 de nuestro nginx esta abierto/acepta peticiones
+      tcpSocket:
+        # Si ponemos otro puerto el container se estara reiniciando pues nginx solo escucha en el 80
+        port: 80 
+      initialDelaySeconds: 15
+      periodSeconds: 5
+
+# Si entramos a los logs del pod no veremos nada

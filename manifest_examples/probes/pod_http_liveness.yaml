@@ -1,0 +1,21 @@
+# Aqui se levanta un pod con una prueba liveness tipo HTTP GET
+apiVersion: v1
+kind: Pod
+metadata: 
+  name: liveness-http
+spec:
+  containers:
+  - name: nginx
+    image: nginx:latest
+    livenessProbe:
+      httpGet:
+        # path especifica la ruta del servidor web que Kubernetes verificará para determinar 
+        # si el contenedor está vivo. Aqui, path: / indica que se hará una solicitud HTTP GET 
+        # a la raíz (/) del servidor web en el puerto 80. Aqui iria el/los endpoint de tu app
+        path: /
+        port: 80 
+      initialDelaySeconds: 10
+      periodSeconds: 5
+
+# La peticion http get, a diferencia de TCP que se hace desde dentro del container, se hace
+# desde fuera
