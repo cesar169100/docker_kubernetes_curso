@@ -220,3 +220,15 @@ Estas probes se configuran en el manifiesto de los pods y ayudan a Kubernetes a 
 - kubectl logs -f pod_name : logs del pod
 - Codigos de probes en carpeta probes.
 - Las probes no tienen sentido en un pod que ejecuta una tarea única y luego termina, como un script de Python que realiza un proceso y finaliza. Las probes son más útiles para aplicaciones de larga duración que deben estar siempre disponibles y responder correctamente a las solicitudes.
+# Video 43: Jobs
+- Cuando lanzamos un container con Deployment, replicaset, statefulset, etc, estos objetos estan disenados para ejecutar tareas infinitas, ie, un proceso que va a estar ahi corriendo continuamente como un webserver o una appi y si falla pues tenemos los mecanismos para relanzar de kubernetes. Si queremos lanzar un proceso finito (un script de python, por ejemplo), para eso estan los jobs.
+- un Job es un recurso que asegura que una o más tareas (pods) se ejecuten hasta completarse satisfactoriamente. Es ideal para tareas que se ejecutan una vez y finalizan, como procesar un conjunto de datos o realizar una operación de copia de seguridad.
+Características de un Job:
+Ejecución de Tareas: Ejecuta uno o más pods hasta que las tareas especificadas hayan finalizado con éxito.
+Reintentos: Si un pod falla, el Job puede reintentar ejecutar la tarea según la política de reintentos especificada.
+Finalización: El Job se considera completado cuando todos los pods necesarios han terminado satisfactoriamente.
+Tipos de Jobs:
+Jobs Completos: Se ejecutan una vez y terminan cuando la tarea se completa.
+Jobs Paralelos: Ejecutan múltiples pods en paralelo, útiles para tareas que pueden dividirse en trabajos independientes.
+CronJobs: Se utilizan para programar tareas que deben ejecutarse de manera periódica.
+- Codigos y notas de Jobs en la carpeta jobs_cronjobs

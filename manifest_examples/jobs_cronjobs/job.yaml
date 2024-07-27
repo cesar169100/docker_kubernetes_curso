@@ -1,0 +1,31 @@
+# Este es un ejemplo de un job que ejecuta un comando en una imagen ubuntu
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hola-mundo
+spec:
+  # Indica que hasta 3 pods pueden ejecutarse simultáneamente. En este caso la carga no es divisible
+  # por lo que la misma tarea se ejecutara 3 veces. Un escenario util seria tener un script que
+  # procese 1 archivo, en ese caso cada pod ejecutaria un archivo y si habria paralelizacions
+  parallelism: 3
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: test
+        # Trabajo a ejecutar
+        command: ["/bin/bash", "-c"]
+        args: ["i=0 \n while [ $i -lt 100 ]\ndo \n /bin/echo hola en linea $i\n let i=$i+1 \n sleep 1; done"]
+        image: ubuntu:latest
+  backoffLimit: 1
+
+# El restartPolicy en un Job de Kubernetes define cómo debe manejarse la reinicialización de 
+# los contenedores en caso de que fallen. Especifica bajo qué condiciones Kubernetes debe 
+# reiniciar un contenedor que forma parte del Job.
+# Para los Jobs, solo hay dos valores válidos para restartPolicy:
+# Never: Kubernetes no intentará reiniciar el contenedor si este falla. En lugar de eso, el 
+# Job creará un nuevo pod para intentar la tarea nuevamente.
+# OnFailure: Kubernetes reiniciará el contenedor si este falla, pero dentro del mismo pod.
+# backoffLimit define el número de reintentos permitidos para el Job antes de que se 
+# considere fallido.
+# Puedes ver lo que hace el comando al ver los logs del pod
