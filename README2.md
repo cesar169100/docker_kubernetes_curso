@@ -232,3 +232,5 @@ Jobs Completos: Se ejecutan una vez y terminan cuando la tarea se completa.
 Jobs Paralelos: Ejecutan múltiples pods en paralelo, útiles para tareas que pueden dividirse en trabajos independientes.
 CronJobs: Se utilizan para programar tareas que deben ejecutarse de manera periódica.
 - Codigos y notas de Jobs en la carpeta jobs_cronjobs
+# Video 44: Cronjobs
+- Ejecutar jobs de manera programada

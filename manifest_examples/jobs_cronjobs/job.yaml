@@ -7,7 +7,13 @@ spec:
   # Indica que hasta 3 pods pueden ejecutarse simultáneamente. En este caso la carga no es divisible
   # por lo que la misma tarea se ejecutara 3 veces. Un escenario util seria tener un script que
   # procese 1 archivo, en ese caso cada pod ejecutaria un archivo y si habria paralelizacions
-  parallelism: 3
+  parallelism: 2 # Valor default 1
+  # El Job se considera completado cuando ha habido 3 ejecuciones exitosas en total. Supon 
+  # tienes 100 archivos, entonces completions debe ser 100 pues debe completar la tarea 100 veces
+  completions: 2
+  # Tiempo en Segundos que tiene el job para terminarse. Si llegas a este punto la ejecucion
+  # se corta y el status del job es failed 
+  activeDeadlineSeconds: 5
   template:
     spec:
       restartPolicy: Never
@@ -15,7 +21,7 @@ spec:
       - name: test
         # Trabajo a ejecutar
         command: ["/bin/bash", "-c"]
-        args: ["i=0 \n while [ $i -lt 100 ]\ndo \n /bin/echo hola en linea $i\n let i=$i+1 \n sleep 1; done"]
+        args: ["i=0 \n while [ $i -lt 10 ]\ndo \n /bin/echo hola en linea $i\n let i=$i+1 \n sleep 1; done"]
         image: ubuntu:latest
   backoffLimit: 1
 

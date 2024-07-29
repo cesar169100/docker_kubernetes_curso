@@ -1,0 +1,27 @@
+# Este es un ejemplo de un job que ejecuta un comando en una imagen ubuntu y lo calendariza
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hola-mundo
+spec:
+  # Primer Lugar: minuto, Segundo: hora, Tercero: día del mes, Cuarto: mes, 
+  # Quinto: día de la semana. El * es todos, por lo que este ejemplo es cada minuto, a toda hora
+  # cada dia del mes, cada mes, cada dia de la semana(0 domingo a 6 sabado)
+  schedule: "9 2 29 7 1" # Lunes 29 jul a las 2:09
+  # No esta soportado, al parecer necesita version 1.27 de kubernetes
+  # timeZone: "America/Mexico_City" 
+  jobTemplate: 
+    spec:
+      parallelism: 2 
+      completions: 2
+      activeDeadlineSeconds: 50
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: test
+            command: ["/bin/bash", "-c"]
+            args: ["i=0 \n while [ $i -lt 10 ]\ndo \n /bin/echo hola en linea $i\n let i=$i+1 \n sleep 1; done"]
+            image: ubuntu:latest
+        
