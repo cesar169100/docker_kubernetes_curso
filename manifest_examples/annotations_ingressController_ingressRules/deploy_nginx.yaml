@@ -1,0 +1,33 @@
+# Haremos un deploy nginx y definiremos un servicio para accesar al cluster
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels: 
+    app: nginx
+  name: nginx
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+spec:
+  ports:
+  - name: nginx
+    targetPort: 80
+    port: 80
+  selector:
+    app: nginx
+  type: NodePort

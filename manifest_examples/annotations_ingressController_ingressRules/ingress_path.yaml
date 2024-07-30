@@ -1,0 +1,59 @@
+# Define un recurso Ingress (Ingress Resource) en Kubernetes que gestiona el acceso externo 
+# a dos servicios (nginx y httpd) a través de un Ingress Controller. El Ingress permite que 
+# las solicitudes HTTP/HTTPS entrantes se enruten a los servicios nginx y httpd según las 
+# rutas especificadas (/nginx y /httpd respectivamente).
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-deployment-path
+  # Esta anotación se utiliza para reescribir la URL de las solicitudes entrantes antes de que
+  # lleguen al backend. En este caso, reescribe todas las rutas coincidentes para que el 
+  # backend vea la solicitud como si fuera a la raíz (/). Mas notas abajo
+  annotations: 
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec: 
+  ingressClassName: nginx # Tipo de ingress Controller
+  # Conjunto de reglas que definen cómo se deben enrutar las solicitudes entrantes.
+  rules:
+  # Define que las reglas son para solicitudes HTTP.
+  - http:
+      # Lista de rutas para enrutar las solicitudes.
+      paths:
+      # Se describen abajo
+      - path: /nginx
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx
+            port:
+              number: 80
+      # - path: /httpd    
+      #   pathType: Prefix
+      #   backend:
+      #     service:
+      #       name: httpd
+      #       port:
+      #         number: 80   
+
+# path: Especifica la ruta (/nginx) que debe coincidir en la solicitud entrante.
+# pathType: Define el tipo de coincidencia de ruta, Prefix en este caso, lo que significa que 
+# cualquier solicitud que comience con /nginx coincidirá.
+# backend: Define el backend al que se deben redirigir las solicitudes que coincidan con esta 
+# ruta.
+# service: Sección que especifica el servicio backend. Nuestros service creados para acceder
+# a los deploys
+#     name: Nombre del servicio backend (nginx).
+#     port: Puerto del servicio al que debe dirigirse el tráfico.
+#         number: Número de puerto del servicio (80).  
+
+# Notas sobre el annotation:
+# Solicitud Original: Un usuario realiza una solicitud a http://example.com/nginx/foo.
+# Reescritura de URL: La anotación nginx.ingress.kubernetes.io/rewrite-target: / hace que la 
+# URL se reescriba a http://example.com/.
+# Enrutamiento al Backend: La solicitud reescrita se envía al servicio nginx-service como si 
+# fuera a la raíz (/), es decir, http://nginx-service/.
+# Beneficios
+# Simplicidad: Los backends no necesitan estar configurados para manejar rutas específicas, 
+# sino que siempre ven las solicitudes como si fueran a la raíz.
+# Flexibilidad: Facilita la configuración de múltiples servicios bajo un único dominio sin 
+# necesidad de modificar la lógica interna de las aplicaciones.

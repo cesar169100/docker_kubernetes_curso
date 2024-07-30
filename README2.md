@@ -233,4 +233,38 @@ Jobs Paralelos: Ejecutan múltiples pods en paralelo, útiles para tareas que pu
 CronJobs: Se utilizan para programar tareas que deben ejecutarse de manera periódica.
 - Codigos y notas de Jobs en la carpeta jobs_cronjobs
 # Video 44: Cronjobs
-- Ejecutar jobs de manera programada
+- Ejecutar jobs de manera programada. Codigos en carpeta jobs_cronjobs
+# Video 45: Annotations
+- Son metadatos clave-valor que puedes agregar a objetos de Kubernetes como Pods, Services, Deployments, etc. A diferencia de las etiquetas (Labels), que se utilizan principalmente para organizar y seleccionar conjuntos de objetos, las Annotations se usan para almacenar información adicional que puede ser utilizada por herramientas y bibliotecas externas.
+- Propósito: Las Annotations proporcionan una forma flexible de adjuntar metadatos no identificables a los objetos. Pueden contener información como notas, referencias, configuraciones específicas, etc.
+- Formato: Se definen como pares clave-valor en la especificación del objeto.
+- Uso: Las Annotations no son utilizadas para seleccionar o filtrar objetos (a diferencia de las labels). Son más adecuadas para adjuntar datos que no influyen en la operación principal de Kubernetes.
+- Carpeta annotations_ingressController_ingressRules
+# Video 46: Nginx ingress Controller e ingress Rules
+- Los Controllers son componentes que gestionan el estado de los objetos en el clúster. Su función principal es asegurar que el estado actual del clúster coincida con el estado deseado especificado en los manifiestos de Kubernetes.
+- Ejemplos: 
+Deployment Controller: Asegura que el número deseado de réplicas de una aplicación estén ejecutándose.
+Job Controller: Asegura que los Jobs se ejecuten hasta completarse.
+ReplicaSet Controller: Mantiene un número específico de réplicas de un pod en ejecución.
+
+En resumen, los controllers son fundamentales en Kubernetes para garantizar que los recursos del clúster se mantengan en el estado deseado, automatizando la gestión de estos recursos.
+- Los Ingress Controllers en Kubernetes son componentes que implementan el recurso Ingress, que gestiona el acceso externo a los servicios dentro de un clúster. Actúan como controladores de tráfico, permitiendo que las solicitudes HTTP y HTTPS lleguen a los servicios adecuados en función de reglas definidas en objetos Ingress.
+- Características clave de los Ingress Controllers
+Balanceo de Carga: Distribuyen el tráfico entrante entre los servicios backend.
+Enrutamiento: Dirigen el tráfico basado en reglas como rutas URL y nombres de host.
+SSL/TLS: Gestionan la terminación SSL para proporcionar conexiones seguras.
+Autenticación y Autorización: Pueden implementar políticas de seguridad para controlar el acceso.
+- Ejemplos:
+NGINX Ingress Controller: Un controlador popular y ampliamente utilizado.
+Traefik: Otro Ingress Controller con características avanzadas como la gestión dinámica de rutas.
+- En resumen, los Ingress Controllers(puntos de acceso) son esenciales para gestionar y dirigir el tráfico externo hacia los servicios dentro de un clúster de Kubernetes, proporcionando balanceo de carga, enrutamiento y seguridad.
+- https://kubernetes.github.io/ingress-nginx/ : Documentacion de como el Ingress-NGINX controller trabaja
+- Helm es un gestor de paquetes para Kubernetes. Facilita la instalación, actualización y gestión de aplicaciones y servicios en un clúster de Kubernetes mediante el uso de charts.
+Charts: Son paquetes que contienen plantillas preconfiguradas para Kubernetes, junto con configuraciones y dependencias.
+Repositorios de Charts: Son lugares donde se almacenan y distribuyen estos charts.
+- Creamos un namespace donde se va a desplegar nuestro nginx ingress controller: kubectl create ns ingress-nginx
+- helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx : Este comando agrega el repositorio de charts de NGINX Ingress a Helm, permitiéndote instalar el Ingress Controller de NGINX en tu clúster de Kubernetes utilizando Helm. (curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash  para instalar helm)
+- helm install -n ingress-nginx ingress-nginx ingress-nginx/ingress-nginx : Instalar
+- Este ingress controller, una vez instalado, incluye un Deployment donde se despliega un Pod a traves de un ReplicaSet. Adicional se crean 2 servicios, el primero es uno tipo LoadBalancer que no tiene IP externa pues se despliega en minikube pero si tiene puerto de exposicion. Y otro que es para configurarlo, pero esto nosotros lo haremos a traves de las reglas. Estos objetos son para el funcionamiento del ingress controller
+- Para acceder al cluster tenemos que tener la IP del cluster de minikube (minikube ip) y el puerto de acceso que se ve con kubectl -n name_space get all (pues creamos un ns para esto)
+- Codigo de los deploys y en Ingress Resource en carpeta annotations_... y notas importantes
