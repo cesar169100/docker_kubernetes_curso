@@ -27,13 +27,13 @@ spec:
             name: nginx
             port:
               number: 80
-      # - path: /httpd    
-      #   pathType: Prefix
-      #   backend:
-      #     service:
-      #       name: httpd
-      #       port:
-      #         number: 80   
+      - path: /httpd    
+        pathType: Prefix
+        backend:
+          service:
+            name: httpd
+            port:
+              number: 80   
 
 # path: Especifica la ruta (/nginx) que debe coincidir en la solicitud entrante.
 # pathType: Define el tipo de coincidencia de ruta, Prefix en este caso, lo que significa que 

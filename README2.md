@@ -268,3 +268,11 @@ Repositorios de Charts: Son lugares donde se almacenan y distribuyen estos chart
 - Este ingress controller, una vez instalado, incluye un Deployment donde se despliega un Pod a traves de un ReplicaSet. Adicional se crean 2 servicios, el primero es uno tipo LoadBalancer que no tiene IP externa pues se despliega en minikube pero si tiene puerto de exposicion. Y otro que es para configurarlo, pero esto nosotros lo haremos a traves de las reglas. Estos objetos son para el funcionamiento del ingress controller
 - Para acceder al cluster tenemos que tener la IP del cluster de minikube (minikube ip) y el puerto de acceso que se ve con kubectl -n name_space get all (pues creamos un ns para esto)
 - Codigo de los deploys y en Ingress Resource en carpeta annotations_... y notas importantes
+- Con lo anterior hemos conseguido acceder mediante su IP(del cluster) y puerto(del servicio) a un servicio con /nginx y a otro servicio con /httpd (192.168.67.2:31393/httpd o 192.168.67.2:31393/nginx)
+- Nota: Un dominio es un nombre único que identifica a un sitio web en Internet. Es la dirección que los usuarios escriben en sus navegadores para acceder a un sitio web específico.
+Componentes de un Dominio
+Nombre de dominio: La parte específica que identifica al sitio web, como example.
+Extensión de dominio: El sufijo que sigue al nombre de dominio, como .com, .org, .net, etc.
+Los dominios son gestionados por el Sistema de Nombres de Dominio (DNS), que traduce los nombres de dominio en direcciones IP para localizar y acceder a los servidores web.
+En resumen, un dominio es una dirección legible por humanos que se utiliza para acceder a un sitio web en Internet.
+# Video 47: Edit y Patch
