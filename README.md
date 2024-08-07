@@ -9,7 +9,7 @@
 sudo chmod 666 /var/run/docker.sock
 ## kubectl
 1) Herramienta de linea de comandos para kubernetes.
-2) Tipear kubectl en el navegador y elegir la primera opcion de sus docs. Elegir el sistema operativo(linux en este caso) y la opcion de instalado "using native package management".
+2) Tipear kubectl en el navegador y elegir la primera opcion de sus docs. Elegir el sistema operativo(linux en este caso), elige la version que desees (parte de arriba, versions) y la opcion de instalado "using native package management".
 3) Seguir el resto de la guia.
 ## minikube
 1) Herramienta para desplegar clusters de kubernetes de manera local.

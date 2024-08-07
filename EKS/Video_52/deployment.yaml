@@ -1,0 +1,36 @@
+# Desplegamos este deploy y un load balancer en nuestro cluster EKS
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels: 
+    app: nginx-d
+  name: nginx-d
+spec: 
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-d
+  template:
+    metadata:
+      labels:
+        app: nginx-d
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-s
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: nginx-d
+
+# Nota: Esta vez, cuando se crea el LoadBalancer lo hara con una External-IP que es un nombre 
+# DNS para el balanceador y atender las peticiones
