@@ -45,3 +45,24 @@ cd .kube/ -> debe haber un archivo config -> lo borramos (rm config) -> ejecutam
 # Video 52: Desplegar Deployment y servicio tipo ELB
 - El codigo y notas en carpeta EKS/Video_52
 - Poner la DNS del pod en el navegador te permitira ver el contenido del container
+# Video 53: eksctl
+- eksctl es una herramienta de linea de comandos para crear y administrar clusters en EKS.
+- Ir a amazon EKS docs -> busca eksctl -> debe haber algun link de instalacion -> sigue los pasos, eksctl version para comprobar.
+- Codigo para crear cluster en carpeta Video_53
+- eksctl se apoya de CloudFormation para la creacion de la infra del cluster. Borra el .kube/config antes de levantar el cluster
+- eksctl create cluster -f archivo.yaml : Levanta el cluster definido en ese manifest
+# Video 54: Intro a Helm
+- Sistema para empaquetar aplicaciones de kubernetes(deployments, ingress etc) en algo llamado charts, que son parametrizables.
+- Dar helm en navegador -> Installing Helm -> From Script -> Ejecutar los comandos y rm get_helm.sh
+- Para instalar un chart debemos agregar un repo de charts a nuestro helm. En el artifacthub y bitnami hay un repo con charts para descargar
+- helm repo add bitnami https://charts.bitnami.com/bitnami : añade el repositorio de charts de Bitnami a tu instalación de Helm. Esto te permite buscar, descargar e instalar aplicaciones empaquetadas (charts) desde el repositorio de Bitnami usando Helm.
+- helm install mi-nginx bitnami/nginx : Un ejemplo de como descargar una api empaquetada
+- Al bajar el chart, este contiene una serie de manifest y en nuestro cluster se crearan una serie de recursos (kubectl get all) como un deployment,  replicaset, servicios(incluido un loadbalancer) y el Pod donde esta nginx
+- helm ls : Lista todos los charts descargados, helm ls -A si tenemos otros namespaces
+- helm uninstall chart_name : Elimina el chart instalado
+# Video 55: Visualizacion de logs de varios pods con Stern
+- Stern es herramienta para obtener logs de varios pods al mismo tiempo
+- Damos stern github en navegador -> Entramos a la opcion de github/stern/stern -> Releases -> Assets -> Elegimos la version stern_linux_amd64 -> clic derecho y copiamos direccion de enlace -> en consola hacemos wget direccion_copiada y esto bajara un binario -> Lo descomprimimos: tar -xvzf archivo_stern.tar.gz -> Damos permisos de ejecucion chmod +x stern -> Lo movemos al path: sudo mv stern /usr/local/bin/stern
+- Ya podemos ejecutar stern para ver que esta instalado
+- stern nginx-d-77d6dd4bd8 : Nos muestra los logs de todos los pods cuyo nombre empiece con ese patron.
+# Video 56: AWS Load Balancer Controller
