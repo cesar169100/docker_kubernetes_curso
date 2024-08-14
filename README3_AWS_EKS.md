@@ -38,7 +38,7 @@ cd .kube/ -> debe haber un archivo config -> lo borramos (rm config) -> ejecutam
 - Una vez desplegado el cluster, ir a Compute -> Node Groups
 - Debemos crear otro IAM role para nuestro node group si es que no existe ya uno con algun nombre como estos: eksNodeRole, AmazonEKSNodeRole, or NodeInstanceRole.
 - Crear rol -> trusted entity: aws service -> use case: EC2 y EC2 en los subcasos tambien, next -> Elegimos las politicas basicas: AmazonEKSWorkerNodePolicy, AmazonEC2ContainerRegistryReadOnly y AmazonEKS_CNI_Policy, next -> Damos nombre como AmazonEKSNodeRole, ponemos descripcion y crear.
-- Volvemos a eks donde nos quedamos, en Compute y Node Groups -> Crear grupo -> Dar nombre y elegir el rol que acabamos de crear -> LaunchTemplate en off y las labels(podemos especificar si es un grupo de maquinas grandes, por ejemplo) y taints las dejamos vacias, next ->  Node group compute: Elegimos la AMI(Amazon machine image for node) linux estandar, Capacity: On demand(pagas el tiempo de uso), elegimos una maquina (t2.micro en mi caso) y disk size lo dejamos en 20G -> Node group scaling: Damos el numero de nodos que queremos, 2 en este caso -> Node group update configuration: Numero o % de nodos no disponibles que permitiremos durante una actualizacion de nodos, en este caso dejamos 1, es decir, si hay actualizacion se hara de uno por uno, next -> Specify networking: Dejamos como esta, next -> Review y create: Create.
+- Volvemos a eks donde nos quedamos, en Compute y Node Groups -> Crear grupo -> Dar nombre y elegir el rol que acabamos de crear -> LaunchTemplate en off y las labels(podemos especificar si es un grupo de maquinas grandes, por ejemplo) y taints las dejamos vacias, next ->  Node group compute: Elegimos la AMI(Amazon machine image for node) linux estandar, Capacity: On demand(pagas el tiempo de uso), elegimos una maquina (t3.small en mi caso) y disk size lo dejamos en 20G -> Node group scaling: Damos el numero de nodos que queremos, 2 en este caso -> Node group update configuration: Numero o % de nodos no disponibles que permitiremos durante una actualizacion de nodos, en este caso dejamos 1, es decir, si hay actualizacion se hara de uno por uno, next -> Specify networking: Dejamos como esta, next -> Review y create: Create.
 - Launch Template: Permite especificar configuraciones detalladas para las instancias EC2 que formarán parte del grupo de nodos. Estas configuraciones incluyen detalles como el tipo de instancia, el AMI, los discos de almacenamiento, las etiquetas y otros parámetros avanzados. Usar un Launch Template asegura consistencia y control sobre la configuración de los nodos. Se crean en la seccion de EC2
 - Una vez creado el nodegroup se crea un autoscaling group visible desde EC2 y las instancias tambien aparecen en instances. Podemos editar el nodegroup al elegirlo y darle edit, podemos modificar la cantidad de nodos activos/deseados, minimos, maximos y etiquetas.
 - Supon tenemos un grupo con 2 nodos activos y lo editamos para tener solo 1 activo. El nodo que ya no estara activo pasa a eliminarse y al proceso que hace kubernetes para mandar la carga de este nodo en proceso de muerte a los demas vivos, se llama eviction.
@@ -60,9 +60,37 @@ cd .kube/ -> debe haber un archivo config -> lo borramos (rm config) -> ejecutam
 - Al bajar el chart, este contiene una serie de manifest y en nuestro cluster se crearan una serie de recursos (kubectl get all) como un deployment,  replicaset, servicios(incluido un loadbalancer) y el Pod donde esta nginx
 - helm ls : Lista todos los charts descargados, helm ls -A si tenemos otros namespaces
 - helm uninstall chart_name : Elimina el chart instalado
+- helm repo list : Lista de los repos agregados hasta ahora
 # Video 55: Visualizacion de logs de varios pods con Stern
 - Stern es herramienta para obtener logs de varios pods al mismo tiempo
 - Damos stern github en navegador -> Entramos a la opcion de github/stern/stern -> Releases -> Assets -> Elegimos la version stern_linux_amd64 -> clic derecho y copiamos direccion de enlace -> en consola hacemos wget direccion_copiada y esto bajara un binario -> Lo descomprimimos: tar -xvzf archivo_stern.tar.gz -> Damos permisos de ejecucion chmod +x stern -> Lo movemos al path: sudo mv stern /usr/local/bin/stern
 - Ya podemos ejecutar stern para ver que esta instalado
 - stern nginx-d-77d6dd4bd8 : Nos muestra los logs de todos los pods cuyo nombre empiece con ese patron.
-# Video 56: AWS Load Balancer Controller
+# Video 56: AWS Load Balancer Ingress Controller
+- La diferencia principal entre un Elastic Load Balancer (ELB) y un Application Load Balancer (ALB) en AWS radica en su tipo y características:
+- Elastic Load Balancer (ELB):
+Tipo: ELB es un término genérico que AWS usa para referirse a su servicio de balanceo de carga.
+Subtipos:
+    Classic Load Balancer (CLB): El tipo más antiguo, utilizado para balancear tráfico tanto en nivel de aplicación (HTTP/HTTPS) como en nivel de transporte (TCP).
+    Application Load Balancer (ALB): Diseñado específicamente para balancear tráfico HTTP/HTTPS, con características avanzadas para aplicaciones web.
+    Network Load Balancer (NLB): Orientado a balancear tráfico TCP/UDP, ideal para aplicaciones de baja latencia y alto rendimiento.
+- Application Load Balancer (ALB):
+Tipo: Subtipo de ELB especializado en el balanceo de tráfico HTTP/HTTPS.
+Características:
+    Capas de Aplicación: Opera en la capa 7 del modelo OSI, lo que permite balancear tráfico basado en contenido (por ejemplo, rutas y headers).
+    Routing avanzado: Soporta reglas complejas de enrutamiento, como la redirección de URLs, path-based routing, y host-based routing.
+    Integración con ECS y EKS: Facilita el despliegue de servicios en contenedores, integrándose con AWS ECS y EKS.
+    WebSocket y HTTP/2: Soporta estos protocolos, proporcionando una mejor experiencia en aplicaciones modernas.
+
+En resumen, ALB es un tipo de ELB más moderno y enfocado en aplicaciones web, con características avanzadas para manejo de tráfico HTTP/HTTPS, mientras que ELB (en su forma de CLB) es más general y de propósito múltiple, pero con menos capacidades específicas para aplicaciones.
+- El archivo iam_policy.json  es una politica de aws que permite que los workers de nuestro cluster sean capaces de gestionar balanceadores de carga.
+- Para crear la politica, el comando esta en el archivo enlaces.txt
+- Activar oidc en nuestro cluster. Nota: OIDC (OpenID Connect) es un protocolo de autenticación basado en OAuth 2.0, que permite a los usuarios autenticarse en aplicaciones web y móviles utilizando una identidad federada (como Google, Facebook, etc.). OIDC proporciona una capa adicional de autenticación al permitir que las aplicaciones verifiquen la identidad del usuario y obtengan su información de perfil básica de manera segura y estandarizada. En este caso, cualquier pod que se despliegue en kubernetes sea capaz de autenticarse con aws via oidc. El comando viene en enlaces.txt
+- Crear cuenta se servicio. Un IAM Service Account en AWS es una combinación de una cuenta de servicio de Kubernetes y un rol de IAM. Permite a los pods en un clúster de Kubernetes, como EKS, asumir permisos específicos de AWS directamente a través de IAM, sin necesidad de usar credenciales a nivel de nodo. Esto facilita que los pods interactúen de manera segura con otros servicios de AWS, como S3 o DynamoDB. Codigo para crearla en el mismo enlaces.txt. Se creara un nuevo stack en CloudFormation que a su vez tendra un rol que permitira que cuando despleguemos el Load Balancer ingress controller tenga acceso a las politicas de seguridad definidas en el iam_policy.json
+- Desplegar AWS Load Balancer: Ver enlaces.txt
+- Nota: AWS Load Balancer actua como un ingress controller
+- Desplegamos un deploy y un servicio en deployment.yaml
+- Desplegamos el ingress en ingress.yaml, se creara el load balancer y el target group (ver en EC2), en el target group, en Targets estaran nuestros nodos
+- Notas: Hubo que agregar a la politica la accion: "elasticloadbalancing:AddTags" y en el manifest del ingress especificar las subnets: alb.ingress.kubernetes.io/subnets: subnet-07e47efa777a5210b, ..., etc
+- Entrando al Load Balancer y ver en los details en DNS name, esta es la direccion para acceder al container. Eliminar el ingress elimina el Load y el Target
+# Video 57: External DNS

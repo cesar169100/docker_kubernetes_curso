@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-deployment-alb
+  annotations: 
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/subnets: subnet-07e47efa777a5210b, subnet-03129a07be52ea85e, subnet-08a6e1694f08449a9, subnet-0157856d5b34ea868, subnet-0f5469aabed083540
+spec: 
+  ingressClassName: alb
+  rules:
+  - http:
+      paths:
+      # Todo lo que llega de la forma /algo o /algo/algomas... etc se manda al servicio nginx-s
+      # Podriamos tener path: /login y eso lo mandaria a algun servicio y /modelo a otro, etc
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx-deployment-alb
+            port:
+              number: 80
+
+
+# {"level":"error","ts":"2024-08-14T00:02:30Z","msg":"Reconciler error","controller":"ingress","object":{"name":"nginx-deployment-alb","namespace":"default"},"namespace":"default","name":"nginx-deployment-alb","reconcileID":"86657993-5a90-4dfc-a446-f4d7c6d50ce8","error":"couldn't auto-discover subnets: unable to resolve at least one subnet (0 match VPC and tags: [kubernetes.io/role/elb])"}
