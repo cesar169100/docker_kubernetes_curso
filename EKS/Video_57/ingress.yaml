@@ -1,0 +1,38 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-deployment
+  # Estas anotaciones son utilizadas en un recurso de Ingress para configurar un AWS ALB 
+  # (Application Load Balancer) en un clúster de Kubernetes. 
+  annotations: 
+    # Esta anotación especifica que el ALB será de tipo "internet-facing", lo que significa 
+    # que será accesible desde internet. Si se quisiera que solo fuera accesible dentro de la 
+    # VPC, se podría usar el valor internal.
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    # Define el tipo de destino para el balanceador de carga. ip indica que el ALB enviará 
+    # tráfico directamente a las direcciones IP de los pods en lugar de hacerlo a través de 
+    # instancias EC2.
+    alb.ingress.kubernetes.io/target-type: ip
+    # Especifica las subnets de la VPC donde se desplegará el ALB. El ALB se creará en estas 
+    # subnets, y es importante que estén en diferentes zonas de disponibilidad para alta 
+    # disponibilidad.
+    alb.ingress.kubernetes.io/subnets: subnet-07e47efa777a5210b, subnet-03129a07be52ea85e, subnet-08a6e1694f08449a9, subnet-0157856d5b34ea868, subnet-0f5469aabed083540
+    # Esta anotación es usada por ExternalDNS para crear automáticamente un registro DNS en el 
+    # proveedor de DNS (como Route 53) que apunte al ALB. El nombre de dominio especificado 
+    # (test.mi-dominio.com) se resolverá a la dirección del ALB cuando este sea creado. test es
+    # el subdominio
+    external-dns.alpha.kubernetes.io/hostname: test.mi-cluster-test.com
+spec: 
+  ingressClassName: alb
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx-deployment-dns
+            port:
+              number: 80
+
+

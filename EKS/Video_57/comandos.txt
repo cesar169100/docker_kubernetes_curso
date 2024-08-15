@@ -1,0 +1,42 @@
+#enlaces
+
+https://github.com/kubernetes-sigs/external-dns
+https://aws.amazon.com/premiumsupport/knowledge-center/eks-set-up-externaldns/
+https://artifacthub.io/packages/helm/bitnami/external-dns
+
+
+## Crear politica de IAM(Para que los pods de external DNS puedan listar zonas, RecordSets y
+## cambios sobre estos), parate en Video_57.
+
+aws iam create-policy \
+    --policy-name ExternalDNSrControllerIAMPolicy \
+    --policy-document file://iam_policy.json
+
+
+## Misma asociacion a oidc, no es necesaria pues ya se hizo lo mismo para el aws load balancer
+## ingress controller 
+eksctl utils associate-iam-oidc-provider --cluster mi-cluster --approve
+
+## Crea otro iamserviceaccount para el externaldns
+eksctl create iamserviceaccount --name external-dns --namespace kube-system 
+--cluster mi-cluster --attach-policy-arn tu_ARN --approve
+## En este caso:
+eksctl create iamserviceaccount \
+  --cluster mi-cluster \
+  --namespace kube-system \
+  --name external-dns \
+  --role-name "ExternalDNSControllerRole" \
+  --attach-policy-arn arn:aws:iam::590184078061:policy/ExternalDNSrControllerIAMPolicy \
+  --approve
+
+# Ya esta agrgardo el repo
+helm repo add bitnami https://charts.bitnami.com/bitnami
+# Instalamos externaldns, nuevamente se levantaran los recursos asociados a este ingress.
+helm install external-dns bitnami/external-dns -n kube-system --set serviceAccount.create=false --set serviceAccount.name=external-dns
+
+
+#stern (Logs de los pods de aws-load y externaldns)
+stern -n kube-system "aws-load-balancer|external-dns"
+
+
+aws iam delete-policy --policy-arn arn:aws:iam::620241740192:policy/ExternalDNSrControllerIAMPolicy

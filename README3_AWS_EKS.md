@@ -93,4 +93,10 @@ En resumen, ALB es un tipo de ELB más moderno y enfocado en aplicaciones web, c
 - Desplegamos el ingress en ingress.yaml, se creara el load balancer y el target group (ver en EC2), en el target group, en Targets estaran nuestros nodos
 - Notas: Hubo que agregar a la politica la accion: "elasticloadbalancing:AddTags" y en el manifest del ingress especificar las subnets: alb.ingress.kubernetes.io/subnets: subnet-07e47efa777a5210b, ..., etc
 - Entrando al Load Balancer y ver en los details en DNS name, esta es la direccion para acceder al container. Eliminar el ingress elimina el Load y el Target
-# Video 57: External DNS
+# Video 57: External DNS (ingress controller)
+- External DNS es una herramienta que gestiona automáticamente los registros DNS para los servicios de Kubernetes. Permite que los recursos de Kubernetes, como Ingress y servicios, se registren en un proveedor de DNS externo, facilitando la configuración y actualización de los nombres de dominio asociados a esos recursos.
+- Route 53 es un proveedor de DNS de AWS y puede ser utilizado como el proveedor externo de DNS para gestionar los registros a través de External DNS en Kubernetes.
+- Codigos para desplegar external DNS en comandos.txt
+- Crear hosted zone: Ir a Route53 -> hosted zones, crear nueva -> dar nombre (mi-diminio.com, por ejemplo) -> Type: Selecciona Public hosted zone si el dominio será accesible desde internet, o Private hosted zone si es para uso interno dentro de una VPC. -> Crear
+- Se deben crear dos, una tipo NS y otra tipo SOA. Debe existir un dominio (hosted zone) a la que apuntar cuando se genere el ingress. Ver en ingress.yaml correspondiente a este video
+- Entonces, una vez creado el cluster y sus nodegroups se despliega el aws load balancer ingress controller como en el video pasado, segundo, se depliega el external dns ingress como se vio aqui, tercero, se crea el hosted zone. Con esto ya se puede desplegar un deploy con su servicio y el ingress, este ultimo creara un balanceador de carga en EC2 que a su vez tendra un DNS name con el que se puede acceder al container, este mismo DNS name estara en la hosted zone creada con un record tipo A, en ese vendra el dominio elegido y se podra acceder con el. No pude acceder con el dominio, segun a veces puede tardar mucho...
