@@ -1,0 +1,14 @@
+# Cuando no se usaba aprovisionamiento dinamico, es decir, se usaba estatico, era necesario definir
+# volumen, luego claim, y ese claim se asociaba al Pod.  En el caso se aprovisionamiento dinamico 
+# solo se necesita crear el claim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ebs-claim
+spec:
+  accessModes: 
+    - ReadWriteOnce
+  storageClassName: ebs-sc # Nombre de la storageClass creada
+  resources:
+    requests:
+      storage: 4Gi

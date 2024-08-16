@@ -1,0 +1,21 @@
+# Este manifiesto crea una StorageClass en Kubernetes, que define cómo se aprovisionan los 
+# volúmenes de almacenamiento dinámico en un clúster.
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ebs-sc
+provisioner: ebs.csi.aws.com
+volumeBindingMode: WaitForFirstConsumer
+
+# Explicacion del codigo:
+# kind: StorageClass: Indica que se está definiendo un recurso de tipo StorageClass, que es 
+# utilizado para describir cómo se deben crear los volúmenes de almacenamiento dinámico en el 
+# clúster.
+# provisioner: ebs.csi.aws.com: Especifica el controlador (provisioner) que Kubernetes 
+# utilizará para aprovisionar volúmenes. Aquí se está utilizando el controlador ebs.csi.aws.com, 
+# que es el CSI de Amazon EBS (Elastic Block Store) en AWS.
+# volumeBindingMode: WaitForFirstConsumer: Establece el modo de vinculación del volumen. 
+# WaitForFirstConsumer significa que el volumen no se aprovisionará hasta que exista un Pod 
+# que lo solicite, lo que ayuda a asegurar que el volumen se cree en la misma zona de 
+# disponibilidad que el Pod que lo consumirá. Esto es importante en entornos con múltiples 
+# zonas de disponibilidad, como en AWS.

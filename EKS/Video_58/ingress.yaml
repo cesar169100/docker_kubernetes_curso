@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-deployment
+  annotations: 
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/subnets: subnet-07e47efa777a5210b, subnet-03129a07be52ea85e, subnet-08a6e1694f08449a9, subnet-0157856d5b34ea868, subnet-0f5469aabed083540
+    external-dns.alpha.kubernetes.io/hostname: prueba.curso-prueba.com
+spec: 
+  ingressClassName: alb
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx-service
+            port:
+              number: 80
+
+

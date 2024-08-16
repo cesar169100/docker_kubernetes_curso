@@ -1,0 +1,49 @@
+https://kubernetes.io/blog/2019/01/15/container-storage-interface-ga/
+https://aws.amazon.com/premiumsupport/knowledge-center/eks-persistent-storage/
+
+
+
+# Descargamos esta politica en json para crear, borrar volumenes, etc
+curl -o example-iam-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-ebs-csi-driver/v0.9.0/docs/example-iam-policy.json
+# Creamos la politica en base al archivo anterior
+aws iam create-policy --policy-name AmazonEKS_EBS_CSI_Driver_Policy --policy-document file://example-iam-policy.json
+
+
+aws iam create-role \
+  --role-name AmazonEKS_EBS_CSI_DriverRole \
+  --assume-role-policy-document file://"trust-policy.json"
+
+
+# activar autenticacion oidc con el cluster, esto ya debe estar hecho 
+eksctl utils associate-iam-oidc-provider --cluster vcc-eksctl --approve
+# Crear rol para nuestro driver CSI
+eksctl create iamserviceaccount \
+  --cluster=mi-cluster \
+  --namespace=kube-system \
+  --name=ebs-csi-controller-sa \
+  --role-name "EKSEBSCSIDriverRole" \
+  --attach-policy-arn=arn:aws:iam::590184078061:policy/AmazonEKS_EBS_CSI_Driver_Policy \
+  --approve
+
+# Desplegar nuestro driver CSI
+kubectl apply -k "github.com/kubernetes-sigs/aws-ebs-csi-driver/deploy/kubernetes/overlays/stable/?ref=master"
+# Eliminar el CSI
+kubectl delete -k "github.com/kubernetes-sigs/aws-ebs-csi-driver/deploy/kubernetes/overlays/stable/?ref=master"
+
+
+# Revisar la cuenta de servicio para revisar que ya traiga la anotacion correspondiente con el 
+# arn del rol creado anteriormente (EKSEBSCSIDriverRole), el que tenga la anotacion correcta
+# deberia ser automatico
+kubectl describe sa -n kube-system ebs-csi-controller-sa
+
+# En caso de que no traiga la anotacion correcta
+kubectl annotate serviceaccount ebs-csi-controller-sa \
+  -n kube-system \
+  eks.amazonaws.com/role-arn=arn:aws:iam::590184078061:role/EKSEBSCSIDriverRole
+# En caso de haber necesitado agregar la anotacion anterior, elimina los pods para que se reinicien
+kubectl delete pods \
+  -n kube-system \
+  -l=app=ebs-csi-controller
+
+# Nota: Ya deberian aparecer pods con nombre iniciando con ebs-csi-controller
+# Checar logs: stern -n kube-system ebs-csi-controller

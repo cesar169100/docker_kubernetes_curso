@@ -100,3 +100,17 @@ En resumen, ALB es un tipo de ELB más moderno y enfocado en aplicaciones web, c
 - Crear hosted zone: Ir a Route53 -> hosted zones, crear nueva -> dar nombre (mi-diminio.com, por ejemplo) -> Type: Selecciona Public hosted zone si el dominio será accesible desde internet, o Private hosted zone si es para uso interno dentro de una VPC. -> Crear
 - Se deben crear dos, una tipo NS y otra tipo SOA. Debe existir un dominio (hosted zone) a la que apuntar cuando se genere el ingress. Ver en ingress.yaml correspondiente a este video
 - Entonces, una vez creado el cluster y sus nodegroups se despliega el aws load balancer ingress controller como en el video pasado, segundo, se depliega el external dns ingress como se vio aqui, tercero, se crea el hosted zone. Con esto ya se puede desplegar un deploy con su servicio y el ingress, este ultimo creara un balanceador de carga en EC2 que a su vez tendra un DNS name con el que se puede acceder al container, este mismo DNS name estara en la hosted zone creada con un record tipo A, en ese vendra el dominio elegido y se podra acceder con el. No pude acceder con el dominio, segun a veces puede tardar mucho...
+# Video 58: EBS con EBS CSI Controller
+- Esta vez se asignaran los volumenes mediante aprovisionamiento dinamico. Este aprovisionamiento, kubernetes, lo hace mediante CSI
+- CSI (Container Storage Interface) es un estándar que define una interfaz para que los proveedores de almacenamiento desarrollen plugins que permitan que los contenedores gestionen volúmenes de almacenamiento de manera uniforme. Esto facilita la integración de distintos tipos de almacenamiento con Kubernetes, independientemente de la tecnología subyacente.
+CSI se comunica con el api de aws para crear volumenes y estos iran montados en nuestros pods
+- Desplegar el CSI controller: archivo comandos.txt del video correspondientes
+- Desplegar storage class, claim y un pod donde se monte ese volumen. El volumen sera visible desde EC2 en Volumes.
+- Entramos al pod: kubectl exec -it pod_name bash, nos vamos a /data que fue donde se monto el volumen y creamos un archivo, eliminamos el pod (el volumen no se elimina, obvio), volvemos a levantar ese pod y en la ruta data/ estara nuestro archivo creado. Para eliminar el volumen, elimina el claim
+- Hasta ahora:
+1) Levantamos cluster y node group
+2) Levantamos el aws Load balancer ingress controller
+3) Levantar el CSI (si quieres volumen)
+4) Crear el storageclass y el claim (si quieres volumen)
+5) Crear la hosted zone (route53)
+4) Levantar deployment con su servicio, luego el ingress, en el deploy especificar volumenes.
