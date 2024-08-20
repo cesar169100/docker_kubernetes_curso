@@ -6,12 +6,17 @@ metadata:
   name: mi-cluster
   region: us-east-1
 
+vpc:
+  clusterEndpoints:
+    publicAccess: true   
+    privateAccess: false
+
 managedNodeGroups:
-  - name: nodegroup-1
+  - name: group-1
     instanceType: t3.small
-    desiredCapacity: 1
-    minSize: 1
-    maxSize: 2
+    desiredCapacity: 2
+    minSize: 2
+    maxSize: 3
     volumeSize: 20
     ssh:
       allow: true # Activar acceso via ssh

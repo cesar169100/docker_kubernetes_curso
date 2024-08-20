@@ -1,0 +1,49 @@
+# Desplegar deployment de prueba y servicio interno que enviara trafico a los pods desplegados
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php-apache
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: php-apache
+  template:
+    metadata:
+      labels:
+        app: php-apache
+    spec:
+      containers:
+      - name: php-apache
+        # Imagen de prueba que genera carga importante
+        image: k8s.gcr.io/hpa-example:latest
+        resources:
+          # Necesitamos especificar request en nuestro deployment si queremos trabajar con
+          # hpa. hpa no se basa en el uso real de cpu que estemos haciendo, sino el uso sobre
+          # un request. Si ponemos 200m, mide que porcentaje de eso estamos usando y con eso
+          # decide si escalar o no
+          requests:
+            cpu: 200m # milicpus 1 CPU = 1000 milicpus
+
+      #   ports:
+      #   - containerPort: 80
+      #   volumeMounts:
+      #   - name: persistent-storage
+      #     mountPath: "/var/www/html" # Dirección en el Pod donde se monta
+      # volumes:
+      # - name: persistent-storage
+      #   persistentVolumeClaim:
+      #     claimName: ebs-claim # Nuestro claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: php-apache
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+  type: ClusterIP
+  selector:
+    app: php-apache

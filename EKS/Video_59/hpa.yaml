@@ -1,0 +1,18 @@
+# Objeto que va a actuar sobre el deployment especificado
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: php-apache
+spec:
+  maxReplicas: 10
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: php-apache
+  # Metrica para decidir el escalado. Cuando en uso medio de cpu de todos los pods sea mayor al
+  # 20% entonces escala y si no, baja.
+  targetCPUUtilizationPercentage: 20
+
+# Nota: No va a estar sube y baja, tiene sus tiempos. Se puede escalar por memoria, o por 
+# metricas customizadas. Ver documentacion

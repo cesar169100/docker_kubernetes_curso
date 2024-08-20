@@ -108,9 +108,25 @@ CSI se comunica con el api de aws para crear volumenes y estos iran montados en 
 - Desplegar storage class, claim y un pod donde se monte ese volumen. El volumen sera visible desde EC2 en Volumes.
 - Entramos al pod: kubectl exec -it pod_name bash, nos vamos a /data que fue donde se monto el volumen y creamos un archivo, eliminamos el pod (el volumen no se elimina, obvio), volvemos a levantar ese pod y en la ruta data/ estara nuestro archivo creado. Para eliminar el volumen, elimina el claim
 - Hasta ahora:
-1) Levantamos cluster y node group
-2) Levantamos el aws Load balancer ingress controller
-3) Levantar el CSI (si quieres volumen)
-4) Crear el storageclass y el claim (si quieres volumen)
-5) Crear la hosted zone (route53)
-4) Levantar deployment con su servicio, luego el ingress, en el deploy especificar volumenes.
+1) Levantamos cluster y node group(Video 56)
+2) Levantamos el aws Load balancer ingress controller(Video 57)
+3) Levantar el CSI (si quieres volumen)(Video 58)
+4) Crear el storageclass y el claim (si quieres volumen)(Video 58)
+5) Crear la hosted zone (route53)(Video 57)
+4) Levantar deployment con su servicio, luego el ingress, en el deploy especificar volumenes.(Video 58)
+# Video 59: HPA(Horizontal pod autoscaler)
+- Escalado horizontal: Añadir más instancias o servidores al sistema para manejar la carga, distribuyendo el trabajo entre múltiples nodos.
+- Escalado vertical: Aumentar la capacidad de un solo servidor o instancia, mejorando sus recursos (CPU, RAM, almacenamiento) para manejar una mayor carga.
+- La doc de kubernetes: Horizontal Pod autoscaling, revisar
+- En Kubernetes, un HorizontalPodAutoscaler actualiza automáticamente un recurso de carga de trabajo (como un Deployment o StatefulSet), con el objetivo de escalar/reducir automáticamente los recursos(mas pods) para satisfacer la demanda.
+- Para trabajar con HPA necesitamos kubernetes metric server, componente para metricas sobre el uso de rcursos en el cluster. Con estas metricas, HPA sabra cuando escalar, reducir, o dejar igual. Para instalar metric server ver comandos.txt de este video
+- Tambien se despliega un deployment, servicio  y un nuevo objeto tipo HorizontalPodAutoscaler que actua sobre un deploy/statefulset para subir o bajar las replicas segun una metrica.
+- El HPA se puede aplicar sobre un ingress, si las solicitudes aumentan entonces que escale el ingress
+- Entonces, hasta ahora:
+1) Levantamos cluster y node group(Video 56) manual o con eksctl
+2) Instalamos metric server (Video 59)
+3) Levantamos el aws Load balancer ingress controller(Video 57)
+4) Levantar el CSI (si quieres volumen)(Video 58)
+5) Crear el storageclass y el claim (si quieres volumen)(Video 58)
+6) Crear la hosted zone (route53)(Video 57)
+7) Levantar deployment con su servicio, luego el hpa, luego el ingress, en el deploy especificar volumenes.(Video 58)
