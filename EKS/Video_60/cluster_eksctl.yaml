@@ -1,0 +1,26 @@
+# En este codigo se despliega un cluster, mediante codigo. Adicional se pone una politica que
+# permita el escalado de nodos
+apiVersion: eksctl.io/v1alpha5 
+kind: ClusterConfig
+
+metadata:
+  name: mi-cluster
+  region: us-east-1
+
+vpc:
+  clusterEndpoints:
+    publicAccess: true   
+    privateAccess: false
+
+managedNodeGroups:
+  - name: group-1
+    instanceType: t3.small
+    desiredCapacity: 1
+    minSize: 1
+    maxSize: 5
+    volumeSize: 20
+    ssh:
+      allow: true # Activar acceso via ssh
+    iam: # Esto se tendria que hacer a mano en la configuracion manual
+      withAddonPolicies:
+        autoScaler: true

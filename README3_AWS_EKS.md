@@ -130,3 +130,19 @@ CSI se comunica con el api de aws para crear volumenes y estos iran montados en 
 5) Crear el storageclass y el claim (si quieres volumen)(Video 58)
 6) Crear la hosted zone (route53)(Video 57)
 7) Levantar deployment con su servicio, luego el hpa, luego el ingress, en el deploy especificar volumenes.(Video 58)
+# Video 60: Cluster Autoscaler
+- En esta seccion se trata el autoescalado de nodos del cluster(no de pods)
+- Va a escalar cuando no pueda levantar mas pods en caso de ser necesario
+- eksctl create nodegroup -f manifest.yaml : Este comando toma el manifest para crear un cluster y solo levanta el nodegroup
+- En comandos.txt viene el comando para descargar el manifest para desplegar el cluster autoscaler y el procedimiento para probar y estresarlo
+- cluster-autoscaler-autodiscover es una configuración utilizada con Kubernetes Cluster Autoscaler que permite al autoscaler descubrir automáticamente los grupos de nodos (node groups) en un clúster administrado por un proveedor de nube, como AWS, GCP o Azure. La autodetección (autodiscover) permite que el autoscaler se configure dinámicamente con los grupos de nodos, en lugar de especificarlos manualmente.
+- Entonces, hasta ahora:
+1) Levantamos cluster y node group(Video 56) manual o con eksctl. Si es con eksctl podemos especificar el addon de autoscaler (Video 60)
+2) Si queremos cluster autoscaler, descargamos cluster-autoscaler-autodiscover.yaml (Video 60)
+2) Instalamos metric server (Video 59)
+3) Levantamos el aws Load balancer ingress controller(Video 57)
+4) Levantar el CSI (si quieres volumen)(Video 58)
+5) Crear el storageclass y el claim (si quieres volumen)(Video 58)
+6) Crear la hosted zone (route53)(Video 57)
+7) Levantar deployment con su servicio, luego el hpa, luego el cluster-autoscaler-autodiscover(Video 60),luego el ingress, en el deploy especificar volumenes.(Video 58)
+# Video 61: Fargate en EKS

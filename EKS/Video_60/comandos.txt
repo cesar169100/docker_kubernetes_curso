@@ -1,0 +1,26 @@
+# Se define, a traves de manifest como va a ser nuestro cluster autoscaler, es decir, las reglas
+# para el escalado
+curl -o cluster-autoscaler-autodiscover.yaml https://raw.githubusercontent.com/kubernetes/autoscaler/master/cluster-autoscaler/cloudprovider/aws/examples/cluster-autoscaler-autodiscover.yaml
+
+# Una vez descargado el archivo debes editar y reemplazar <YOUR CLUSTER NAME> por el nombre del
+# cluster(linea 165)
+# Ahora debemos hacer lo mismo que en la seccion de hpa para estresar el cluster, intente escalar
+# los pods y al no poder escale los nodos
+
+# Instalar metrics server
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+kubectl get deployment metrics-server -n kube-system (verificar creacion)
+
+# Creamos el deployment, servicio y hpa del video 59 (kubectl apply -f ./EKS/Video_59/deployment.yaml)
+# y asi los demas
+
+# Desplegamos nuestro cluster autoscaler
+kubectl apply -f cluster-autoscaler-autodiscover.yaml
+
+# Una vez creados volvemos a estresar con el comando. Se crearan primero mas pods y cuando 
+# ya no pueda levantara mas nodos
+kubectl run load-generator --rm -it --image=busybox --restart=Never -- /bin/sh -c "while sleep 0.1; do wget -q -O- http://php-apache; done"
+watch -n 1 kubectl get all (ver uso de cpu)
+
+
+# Nota: Este ejemplo, el autoscaler esta en la modalidad de autodiscover, hay otras en github
