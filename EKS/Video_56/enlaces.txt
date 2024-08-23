@@ -39,7 +39,6 @@ eksctl create iamserviceaccount \
 eksctl delete iamserviceaccount --cluster=mi-cluster --namespace=kube-system --name=aws-load-balancer-controller
 
 
-
 ## Desplegar load balancer controller
 # https://artifacthub.io/packages/helm/aws/aws-load-balancer-controller Liga para ver el comando
 # para agregar el repo a helm (helm repo add eks https://aws.github.io/eks-charts)

@@ -1,0 +1,27 @@
+## Crear politica (nos paramos en la ruta de la carpeta Video_56 para que jale asi) y revisar
+## que la policita AWSLoadBalancerControllerIAMPolicy exista en IAM -> Policies
+# Ahorita ya la tengo creada, no es necesario hacerla de nuevo
+aws iam create-policy \
+    --policy-name AWSLoadBalancerControllerIAMPolicy \
+    --policy-document file://iam_policy.json
+
+
+## activar autenticacion oidc con el cluster
+eksctl utils associate-iam-oidc-provider --cluster cluster_name --approve
+
+# Crear el rol con el arn de la politica anterior:
+eksctl create iamserviceaccount \
+  --cluster=mi-cluster \
+  --namespace=kube-system \
+  --name=aws-load-balancer-controller \
+  --role-name "AmazonEKSLoadBalancerControllerRole" \
+  --attach-policy-arn=arn:aws:iam::590184078061:policy/AWSLoadBalancerControllerIAMPolicy \
+  --approve 
+
+# Instalar el aws load balancer ingress controller, agregamos la vpcId que se creo en el stack
+# de cloudformation al levantar el cluster. Elegirel stack y en resources ahi viene la vpcId
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller --set clusterName=mi-cluster -n kube-system --set serviceAccount.create=false --set serviceAccount.name=aws-load-balancer-controller --set vpcId=vpc-0eb04bfd7fa0298ed
+
+# Desplegamos el deploy y su servicio y despues el ingress
+
+eksctl delete cluster -f cluster.yaml

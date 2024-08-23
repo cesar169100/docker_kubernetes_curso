@@ -1,0 +1,32 @@
+apiVersion: eksctl.io/v1alpha5 
+kind: ClusterConfig
+
+metadata:
+  name: mi-cluster
+  region: us-east-1
+# Perfil e fargate
+fargateProfiles:
+  - name: fp-default
+    # Cualquier elemento que se despliegue en alguno de estos namespace se levantara con infra
+    # de fargate
+    selectors:
+      - namespace: default
+      - namespace: kube-system
+
+  - name: fp-dev
+    selectors:
+    # Aqui, adicional a que se especifique que levantaremos algo en el ns dev, contiene unas
+    # labels que debe cumplir un objeto levantado para ser desplegado en ese ns con infra de 
+    # fargate
+      - namespace: dev
+        labels:
+          env: dev
+          checks: passed
+
+# Un perfil de Fargate en Amazon EKS define las configuraciones para ejecutar pods en Fargate 
+# en lugar de en instancias EC2 dentro de un clúster de Kubernetes. El perfil especifica en 
+# qué namespaces o para qué selecciones de pods se utilizará Fargate, permitiendo que esos pods
+# se ejecuten sin necesidad de gestionar servidores, aprovechando la infraestructura sin 
+# servidor de AWS.
+# Nota: Lo que no se despliegue en fargate ira a nodos normales. Limitaciones de fargate en la
+# doc de aws eks fargate considerations

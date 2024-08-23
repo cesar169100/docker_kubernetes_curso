@@ -146,3 +146,9 @@ CSI se comunica con el api de aws para crear volumenes y estos iran montados en 
 6) Crear la hosted zone (route53)(Video 57)
 7) Levantar deployment con su servicio, luego el hpa, luego el cluster-autoscaler-autodiscover(Video 60),luego el ingress, en el deploy especificar volumenes.(Video 58)
 # Video 61: Fargate en EKS
+- AWS Fargate es un servicio de Amazon Web Services que permite ejecutar contenedores sin necesidad de gestionar servidores o instancias. Con Fargate, simplemente defines los recursos necesarios para tus contenedores, y AWS se encarga de provisionar, escalar y gestionar la infraestructura subyacente automáticamente. Es compatible con Amazon ECS y EKS, facilitando el despliegue de aplicaciones contenedorizadas sin preocuparte por la administración de la infraestructura.(sin nodos workers)
+- Es comun usar nodegroups en eks y ademas fargate tambien, es decir, las dos.
+- cluster_fargate.yaml nos ensena como levantar un cluster con "nodos" de fargate, adicional, comentarios importantes.
+- Los demas manifest son para levantar cosas
+- Seguir las instrucciones de comandos.txt para crear un load balancer, deploy, etc en los 'nodos' de fargate.
+- El instructor recomienda usar siempre fargate y dejar un nodegroup por si acaso, esto porque hay cosas que no son compatibles con fargate; en ese sentido a mi me parece aprender a usar bien los nodegroups mejor. De hecho lo recomendable en entorno productivo, uso a largo plazo, requisitos especificos de hardware(gpus, maquinas t3.small, large, etc) es nodegroups

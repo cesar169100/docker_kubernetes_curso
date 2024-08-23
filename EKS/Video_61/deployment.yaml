@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment-fargate
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx-deployment-fargate
+  template:
+    metadata:
+      labels:
+        app: nginx-deployment-fargate
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service-fargate
+spec:
+  # Necesitamos un puerto expuesto al exterior del cluster, el balanceador tendra acceso
+  type: NodePort
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: nginx-deployment-fargate
+
+# Nota: Los servicios tipo LoadBalancer no funcionan en fargate(ver eks fargate considerations
+# en la doc oficial)

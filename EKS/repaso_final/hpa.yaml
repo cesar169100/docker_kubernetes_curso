@@ -1,0 +1,16 @@
+# Objeto que va a actuar sobre el deployment especificado
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: php-apache
+spec:
+  maxReplicas: 10
+  minReplicas: 1
+  # Objeto al que apunta
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: nginx-d
+  # Metrica para decidir el escalado. Cuando en uso medio de cpu de todos los pods sea mayor al
+  # 20% entonces escala y si no, baja.
+  targetCPUUtilizationPercentage: 20
