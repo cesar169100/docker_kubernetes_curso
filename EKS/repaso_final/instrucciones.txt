@@ -95,7 +95,7 @@ helm install aws-load-balancer-controller eks/aws-load-balancer-controller --set
 Si el namespace kube-system esta asociado a un 'nodo' de fargate, entonces debemos agregar la
 vpcId al comando anterior. Este Id se puede ver en el stack de cloudFormation en la parte de 
 resources y aparece como VPC:
-helm install aws-load-balancer-controller eks/aws-load-balancer-controller --set clusterName=mi-cluster -n kube-system --set serviceAccount.create=false --set serviceAccount.name=aws-load-balancer-controller --set vpcId=vpc-0eb04bfd7fa0298ed
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller --set clusterName=mi-cluster -n kube-system --set serviceAccount.create=false --set serviceAccount.name=aws-load-balancer-controller --set vpcId=vpc-0df3a7e5e43ea49dd
 
 ###########################################################################################
 ###################### --Punto 5: ExternalDNS y Hosted Zone-- ##################################
@@ -128,7 +128,7 @@ Instalamos externaldns en el namespace kube-system:
 helm install external-dns bitnami/external-dns -n kube-system --set serviceAccount.create=false --set serviceAccount.name=external-dns
 
 Agregar vpcId en caso de que kube-system este en un 'nodo' fargate?:
-helm install external-dns bitnami/external-dns -n kube-system --set serviceAccount.create=false --set serviceAccount.name=external-dns --set vpcId=vpc-0eb04bfd7fa0298ed
+helm install external-dns bitnami/external-dns -n kube-system --set serviceAccount.create=false --set serviceAccount.name=external-dns --set vpcId=vpc-0df3a7e5e43ea49dd
 
 Revisamos los logs de los pods del load balancer y externaldns:
 stern -n kube-system "aws-load-balancer|external-dns"
@@ -212,3 +212,43 @@ Eliminar cluster:
 eksctl delete cluster -f archivo.yaml
 
 Revisar en EC2, CloudFormation si hay algo que no sea default y eliminarlo
+
+###########################################################################################
+############################## --Notas-- ############################################
+###########################################################################################
+En caso de tener 2 o mas clusters es conveniente especificar que archivo config de la carpeta 
+.kube/ le corresponde a cada uno. Supon que tienes el actual config asociado a un cluster con
+version 1.26 de kubernetes, entonces podemos renombrar ese archivo con el comando:
+mv config config-126
+Si hacemos otro cluster con version 1.30 y ejecutamos comando de update-kubeconfig entonces
+se creara otro archivo config, a este podemos de nuevo renombrarlo con:
+mv config config-130
+Ahora tenemos un cluster de cada version con su config correspondiente. Para alternar kubectl
+entre los dos debemos especificarlo:
+
+KUBECONFIG=/home/cesar/.kube/config-126 kubectl get all
+
+Con kubectl api-versions podemos ver las ApiVersion de los objetos que se definen en los 
+manifest, por ejemplo:
+ApiVersion: v1
+kind: Objeto
+
+kubectl api-resources : Los recursos que maneja kubectl(deployments, pods, etc) y su respectiva
+version
+
+Para Actualizar cluster, ver Updating kubernetes version de la doc de aws eks. La actualizacion
+se recomienda que sea de vesion en version, es decir, si estas en la 1.26 entonces actualiza a 
+la 1.27, luego 1.28 y asi sucesivamente hasta llegar a la version deseada; no ir directo de 
+la 1.26 a la 1.30 por ejemplo 
+
+Otra nota: El addon Coredns solia aparecer como degraded, esto se puede deber a q su deploy
+no tiene el numero de replicas que necesita funcionando. Para ver las replicas que necesita este
+addon ejecuta:
+kubectl get deployment coredns -n kube-system -o yaml
+y fijate en las replicas. En este ejemplo el namespace kube-system (que es donde estan los addons)
+se levanto en un nodo fargate, a lo mejor fargate en automatico escalo para que jalara bien.
+
+Este comando nos da la zona de disponibilidad de un conjunto de subnets
+aws ec2 describe-subnets --subnet-ids subnet-0f386fe89fee2cb3c subnet-07250d7d4371d5d98 --query 'Subnets[*].[SubnetId,AvailabilityZone]' --output table
+
+

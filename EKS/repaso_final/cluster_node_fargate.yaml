@@ -10,16 +10,16 @@ vpc:
     publicAccess: true   
     privateAccess: false
 
-fargateProfiles:
-  - name: fp-kube-system
-    selectors:
-      - namespace: kube-system
+# fargateProfiles:
+#   - name: fp-kube-system
+#     selectors:
+#       - namespace: kube-system
 
 managedNodeGroups:
   - name: group-1
     instanceType: t3.small
-    desiredCapacity: 1
-    minSize: 1
+    desiredCapacity: 3
+    minSize: 3
     maxSize: 5
     volumeSize: 20
     ssh:
