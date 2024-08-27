@@ -1,0 +1,44 @@
+### Metrics server
+
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm install metrics-server -n kube-system bitnami/metrics-server
+
+### Prometheus
+# Creamos un namespace para prometheus
+kubectl create ns monitoring
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+# Instalamos en el namespace monitoring
+helm install -n monitoring prometheus prometheus-community/prometheus
+# Forward del puerto para acceder al server de prometheus
+kubectl -n monitoring port-forward svc/prometheus-server 8080:80
+con esto ya se puede abrir en localhost:8080
+
+# Escalar nodos
+eksctl scale nodegroup --cluster=mi-cluster --name=group-1 --nodes=3
+
+
+# grafana
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo update
+helm install -n monitoring grafana grafana/grafana
+# Obtener pass de grafana
+kubectl -n monitoring get secrets grafana -o yaml
+# Hacer al password para obtener su valor real pues esta en base64:
+echo password |base64 -d
+echo Q3d5VFJveDRYdVhlTmRDUExLcFVYVzIxNzBIRDZ2ejRMdzE2cGt6SQ== |base64 -d
+contrasena real: CwyTRox4XuXeNdCPLKpUXW2170HD6vz4Lw16pkzI
+El usuario es admin
+# port forwarding
+kubectl -n monitoring port-forward svc/grafana 8080:80
+# Abrir grafana en localhost:8080
+# Grafana abrio en mozilla pero no en chrome
+
+
+# dashboard de grafana imortantes:
+importar dashboard 10000 y 15661
+https://grafana.com/grafana/dashboards/15661
+
+# Desinstalaciones
+helm uninstall prometheus -n monitoring
+helm uninstall grafana -n monitoring
