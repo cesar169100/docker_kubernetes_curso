@@ -1,0 +1,28 @@
+# Agregamos el repo a helm
+helm repo add elastic https://helm.elastic.co
+
+# Creamos el ns de monitoreo
+kubectl create ns monitoring
+# Intalar herramientas
+helm install -n monitoring elasticsearch elastic/elasticsearch
+helm install -n monitoring kibana elastic/kibana 
+helm install -n monitoring filebeat elastic/filebeat
+# Instalar a partir de un yaml
+helm install -n monitoring elasticsearch elastic/elasticsearch -f values.yml 
+
+# Revisar los yaml
+helm template elasticsearch elastic/elasticsearch -n monitoring
+helm template elasticsearch elastic/elasticsearch -n monitoring > elasticsearch-install.yaml
+
+
+kubectl -n monitoring port-forward svc/kibana-kibana 8080:5601
+
+
+open http://localhost:8080
+
+
+# uninstall
+
+helm -n monitoring uninstall elasticsearch filebeat kibana
+kubectl -n monitoring delete pvc --all
+kubectl -n monitoring delete pv --all

@@ -1,0 +1,341 @@
+---
+# Source: elasticsearch/templates/poddisruptionbudget.yaml
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: "elasticsearch-master-pdb"
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: "elasticsearch-master"
+---
+# Source: elasticsearch/templates/secret-cert.yaml
+apiVersion: v1
+kind: Secret
+type: kubernetes.io/tls
+metadata:
+  name: elasticsearch-master-certs
+  labels:
+    app: elasticsearch-master
+    chart: "elasticsearch"
+    heritage: Helm
+    release: elasticsearch
+data:
+  tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURqakNDQW5hZ0F3SUJBZ0lSQU96Mk9BQSs0YjlXM1hrcXloNTl4Zmt3RFFZSktvWklodmNOQVFFTEJRQXcKR3pFWk1CY0dBMVVFQXhNUVpXeGhjM1JwWTNObFlYSmphQzFqWVRBZUZ3MHlOREE0TWpreE9USXhNREJhRncweQpOVEE0TWpreE9USXhNREJhTUI4eEhUQWJCZ05WQkFNVEZHVnNZWE4wYVdOelpXRnlZMmd0YldGemRHVnlNSUlCCklqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUF2Z1UydVpTTjdXMTBJZVBNNlVjdThNK2gKb09HVVVFKzA5SkRxaXc4aHV4MENYWExYUnU4c0NaRWtsZ1o4TGhpcUpiNHQ5UFZ3akRibHYvOGoyemFjdkV4RwpxRm9yOVNwUE5teVZ0UVZ6R2ZoTGZYU3Y1Q0h0NTVEK3E1eXNlYlNDbkhXWFA5Um5RciswNklMOGNHa2FIQTZBCmNuRXpHb2RVUnlSR2llTnFHWDkzYUJDTVNJd2lZTWxzQVpCMURBaC9ad2hHQmdhT3hROXF5WUg0b05kbUFFaVQKcWViSm5Yc3VjWU0rbzRmWWorWFcwd3R5eGplb1hyZWxLUjhnZnJBc0ZzTnY3U09iMi9oaXFXaTZXQkNFajlhWQozbFFHRTg2SU9YamUramwrbCtwaStaMVlqdis5Z2dlYS83b1lESlBKU2lnUGVvWHB2Rm9BRndaN1lKUXYwd0lECkFRQUJvNEhJTUlIRk1BNEdBMVVkRHdFQi93UUVBd0lGb0RBZEJnTlZIU1VFRmpBVUJnZ3JCZ0VGQlFjREFRWUkKS3dZQkJRVUhBd0l3REFZRFZSMFRBUUgvQkFJd0FEQWZCZ05WSFNNRUdEQVdnQlNURUFwZ1ZxY3laaW55d2JVZApBWi9MRzVsSHB6QmxCZ05WSFJFRVhqQmNnaFJsYkdGemRHbGpjMlZoY21Ob0xXMWhjM1JsY29JZlpXeGhjM1JwClkzTmxZWEpqYUMxdFlYTjBaWEl1Ylc5dWFYUnZjbWx1WjRJalpXeGhjM1JwWTNObFlYSmphQzF0WVhOMFpYSXUKYlc5dWFYUnZjbWx1Wnk1emRtTXdEUVlKS29aSWh2Y05BUUVMQlFBRGdnRUJBSFl0TmhRSkF1cDU0NzZOQ3JyNApOSGprUEwxQWdGWUJaNTh1VGp5UWZlMW02ekpWQmNkMVdPM1VIWEJtM01aS25xVFVtSGdJWW11V1RCbUxMOFhpCjN6YmkzRFJLVlMwMVhYWDAyZUtHK3krVDFPa01mSVlNdGlwQnZPL2pCVWVtMmhQV0pZQXhlR3hiZkE0VEhRQTIKaisxVjlIbXNFeWJ6MThQYVluMThER0pFRUI0V1JNaUdTQUhuUUtmZGlhUzN1a0d2TFBjRVIxMFFBU2MyTDlOTwpNekovak9FNVI3TEJ0NVlJdUFmNld5cmxaRnFuNzVIcURWK0xJRzBDeHFIYTgyMFN2bG00S1kyYXc2bEdaSTUyCk5Gd1pteEdlcG11enVkNmVpZ2JWdnFXK0JrR1dQL2tZR0JkOHhId1BhVmRFZzBPdGVNSkhFMHI3K2x0NGhHL0IKU3pFPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+  tls.key: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFb3dJQkFBS0NBUUVBdmdVMnVaU043VzEwSWVQTTZVY3U4TStob09HVVVFKzA5SkRxaXc4aHV4MENYWExYClJ1OHNDWkVrbGdaOExoaXFKYjR0OVBWd2pEYmx2LzhqMnphY3ZFeEdxRm9yOVNwUE5teVZ0UVZ6R2ZoTGZYU3YKNUNIdDU1RCtxNXlzZWJTQ25IV1hQOVJuUXIrMDZJTDhjR2thSEE2QWNuRXpHb2RVUnlSR2llTnFHWDkzYUJDTQpTSXdpWU1sc0FaQjFEQWgvWndoR0JnYU94UTlxeVlING9OZG1BRWlUcWViSm5Yc3VjWU0rbzRmWWorWFcwd3R5CnhqZW9YcmVsS1I4Z2ZyQXNGc052N1NPYjIvaGlxV2k2V0JDRWo5YVkzbFFHRTg2SU9YamUramwrbCtwaStaMVkKanYrOWdnZWEvN29ZREpQSlNpZ1Blb1hwdkZvQUZ3WjdZSlF2MHdJREFRQUJBb0lCQUVBcFlJWWZUQ0VjY1RjMApSUytMc3FUclp3Yjh4R2l0MFVzM1Y0cm03QnZUT3NZMURjM00ycERNYW84aDEzSjFMNWFZOWNtZHlvZjl6V3djCkNZNXVqVlBqYVlSVkZqeXRNWndONUNzQWtSSDJ6ZjZwbE82eUtqT2p1T3BYZDhHTW13R2JqeHVsYTh5VkVNL2wKMHJsZU04dS9kYzJ1dlhPNnVGRmhSVlF2N3RaMnB6Uk5qRHQrQlJmRnllRVVmS0RINWlpeERYcU9FOFJQeHRrQwpDaVMyWGtmMDd6VmJvNVB6V29pN1NlYkt5OGVQRmJtTElvbkJKYUR2N0haRUpKT2JrYUx3NmZzSi93dm9oNkZvCjVPSVVIdUQxSkJTUHlnb2J3QWg2Ykd1SWo3OGZKSzZwbC8wNjVvcENrVTB4VVNRbDljTS8zVzFPc0dWTmpSY0wKVnRRSllta0NnWUVBOUFrVklLWUhQSUFsRnNnbTVyMWlMRk1DVDhOUzlDSkloUG1GSnZjRi9ZUWduYVFTV1JvUAp1TVJrTWtpd2d2UHREL1JRVWt1SnoxaFpXVDV4R2JyMFhMTCtaOG1mMzRpQ3ZxbHFMQ2t0VzlyNGJnVU1CRDFQCk1wU3pwY3Q3Rmt3VkdwQldzU0NYb0FCV3BRSHpZZ2pTT0JFVFMxS0V4MGwrR1BVRmVMRW9pMDBDZ1lFQXgxWXUKYTM3Y3JGYUp4bzBWVVRYeDNpTDlrcU1NcDZWY3JISlVmc0VyUDlwQWhPUUhRc082NGpNY0xBUll4S0RhOHl1VgpFN2hzaWZua0hkOHNkZkRvTlJJNmNSUFEvVUxqQU5hUHRzUVFRTzRiMDhPcFJMZDhEeHVQOW9sckNwVk9YM2cxCk1JZ3V3dHFQT0hlRUtqb0x5c0EzcVNGVCt2RTJDbEZCcFRVSTE1OENnWUJSN0c2a1REaG5yaGxGWWFIMW1pUkgKL3dIcXB3YkZJSEU1K3M0aGU1SU9Qbm40a2VqNjhvM09tRmVPcmVwYnUrbWNqb2NjYVhGMUl4S3pyQXVwK0tJcQpNSWpKYk4xMzNFc1FHSzJrNzVuam1Vb0hIVGlnZjdpRG9Yb0JzYUs3cElUOUt2Ri9leEtMeXpGTEtiRjcrcndmCnlGT3kySnZzanhaKzZGcVMzdDVlalFLQmdBS1BudVVPcWpNa29YeUZqNEtObU4vcnZ5cEZJZ0o5WTJWcnlwNGUKU1RuMnllRnJOSlN0QXhlbzVISEVWSWVpTVczeVgyWHpkcUdITG1FYjN1eGMvZjdBanpPb3Q0U3BlVlVuYkkxQwprNXJoOUVXU08vaUFDdjMrc3FqT055dlpvem9peHp3cVk3OXBJM0hzUnl4cnRuOFNYU1MxSXVrVWRFZEpwL2hCCmFDMnRBb0dCQUtqRkxoSEovNVIvWks0aFlkM0xsRkZocGxDWTJzSzhXYklhalpYNmxiaitDcEE0RnFOM3VOaTcKa01QNFoxTWphSEFJdkJYZ3E4YUlxcVpkRnVpNDhLcVcrRmRaZ09iUWVwWi9LOFV4U1BvcHVlV0pzaWgxeWc2cQp1RkdZVlR2S1FEYy9oL2pPMkc5SEFHTzNOT2NnUkZHdTFBUU40ZVZodUlhcjV4eWd6dlk1Ci0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg==
+  ca.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURJakNDQWdxZ0F3SUJBZ0lSQU43N0lubnJrOVJuZVBIcmxqZm51ZDR3RFFZSktvWklodmNOQVFFTEJRQXcKR3pFWk1CY0dBMVVFQXhNUVpXeGhjM1JwWTNObFlYSmphQzFqWVRBZUZ3MHlOREE0TWpreE9USXhNREJhRncweQpOVEE0TWpreE9USXhNREJhTUJzeEdUQVhCZ05WQkFNVEVHVnNZWE4wYVdOelpXRnlZMmd0WTJFd2dnRWlNQTBHCkNTcUdTSWIzRFFFQkFRVUFBNElCRHdBd2dnRUtBb0lCQVFEZmE3ekRRTTRjYWJhUVQySTNIZ0kwOXVLbXhwRkYKRXB6b3RVM0FFYWJDVE16WkxUbms1M3pCMmFYMnpaWlFJZ2FpZDhTSlF6SVJVcE5NVmRPR2xMZERCbGVOODFSdQpzVjhMNnlUVW80RWpXd2lCaGJCVmI5SDkzSVdjSDlkL3oyVHVudmlET1U5OFVndEtmeWJQUmxyYVRSZi93MWlPCnQ0RkN0QUpqLzRFMFZBMkhoS3VXaGJCM3hEdHZVbWJCQWpzc0F3SHNwRlFRUDVIMUt3a2h3Nmx3cVY0YVFESHkKcXNnekVIcHQ5V0F0TUhlZ0NyRkhGdVFMekx1RWpFbk9lbWQ2dENYRDlNMjl4K08zaXZQeGo4bWlXYjhHZEZYbgpPZm5Ba2lGQmFjejlhUnFERDVReGZ1UkIvU25rSEkxWDN0bEQ4S2h0bVBJVXJXOWNObnhLR29RSkFnTUJBQUdqCllUQmZNQTRHQTFVZER3RUIvd1FFQXdJQ3BEQWRCZ05WSFNVRUZqQVVCZ2dyQmdFRkJRY0RBUVlJS3dZQkJRVUgKQXdJd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBZEJnTlZIUTRFRmdRVWt4QUtZRmFuTW1ZcDhzRzFIUUdmeXh1WgpSNmN3RFFZSktvWklodmNOQVFFTEJRQURnZ0VCQUo2M2gxYXd5Zm41U0JLZlRWUXd6b0o3YlBOeTl1MmZPeXJhCnhUd2FwZ0JMZUFlYUdaZnZDOWNJSWNXeW5ZdGYrd2FJRm9reTM2ZkRzakg1NURzZytkWlpqcUFPTlhhTE05VTcKVkdyM01YbHlLVWN1Wkl2eENoemYyYkVycDFGdHRFdUNaNkg2bFAyaTYrVzlUSXN0RzdvTjcxV3dWTnFyYzNCdwpRLzZQZzhSZXQrcEJnZ2s1Mm5MRWlJRDg1dHFVOUJvL0E5TFB3Q2ZldWRLVkpIV2VwMHBpalBOTHZQRlJYNVBHCjMzem9lc2tETGZwOEtQbkRTUnhwTVZ5SGEwZWxjenVCazFuV2F2UGhnQzZVN3ZDYmdQako4ZFJ1cEFyakpObnIKeTNCaVFxZUNIbWZyK1JBV05HQ1ZGZzhDR25CdCtxdHZVQ0x0R3lUNzlTTyt3TDNIbHJjPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+---
+# Source: elasticsearch/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: elasticsearch-master-credentials
+  labels:
+    heritage: "Helm"
+    release: "elasticsearch"
+    chart: "elasticsearch"
+    app: "elasticsearch-master"
+type: Opaque
+data:
+  username: ZWxhc3RpYw==
+  password: "eGNkZXhjbHBmMEF2OHFkbQ=="
+---
+# Source: elasticsearch/templates/service.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: elasticsearch-master
+  labels:
+    heritage: "Helm"
+    release: "elasticsearch"
+    chart: "elasticsearch"
+    app: "elasticsearch-master"
+  annotations:
+    {}
+spec:
+  type: ClusterIP
+  selector:
+    release: "elasticsearch"
+    chart: "elasticsearch"
+    app: "elasticsearch-master"
+  publishNotReadyAddresses: false
+  ports:
+  - name: http
+    protocol: TCP
+    port: 9200
+  - name: transport
+    protocol: TCP
+    port: 9300
+---
+# Source: elasticsearch/templates/service.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: elasticsearch-master-headless
+  labels:
+    heritage: "Helm"
+    release: "elasticsearch"
+    chart: "elasticsearch"
+    app: "elasticsearch-master"
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+spec:
+  clusterIP: None # This is needed for statefulset hostnames like elasticsearch-0 to resolve
+  # Create endpoints also if the related pod isn't ready
+  publishNotReadyAddresses: true
+  selector:
+    app: "elasticsearch-master"
+  ports:
+  - name: http
+    port: 9200
+  - name: transport
+    port: 9300
+---
+# Source: elasticsearch/templates/statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: elasticsearch-master
+  labels:
+    heritage: "Helm"
+    release: "elasticsearch"
+    chart: "elasticsearch"
+    app: "elasticsearch-master"
+  annotations:
+    esMajorVersion: "8"
+spec:
+  serviceName: elasticsearch-master-headless
+  selector:
+    matchLabels:
+      app: "elasticsearch-master"
+  replicas: 3
+  podManagementPolicy: Parallel
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      name: elasticsearch-master
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 30Gi
+      storageClassName: gp2
+  template:
+    metadata:
+      name: "elasticsearch-master"
+      labels:
+        release: "elasticsearch"
+        chart: "elasticsearch"
+        app: "elasticsearch-master"
+      annotations:
+        
+    spec:
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+      automountServiceAccountToken: true
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - "elasticsearch-master"
+            topologyKey: kubernetes.io/hostname
+      terminationGracePeriodSeconds: 120
+      volumes:
+        - name: elasticsearch-certs
+          secret:
+           secretName: elasticsearch-master-certs
+      enableServiceLinks: true
+      initContainers:
+      - name: configure-sysctl
+        securityContext:
+          runAsUser: 0
+          privileged: true
+        image: "docker.elastic.co/elasticsearch/elasticsearch:8.5.1"
+        imagePullPolicy: "IfNotPresent"
+        command: ["sysctl", "-w", "vm.max_map_count=262144"]
+        resources:
+          {}
+
+      containers:
+      - name: "elasticsearch"
+        securityContext:
+          capabilities:
+            drop:
+            - ALL
+          runAsNonRoot: true
+          runAsUser: 1000
+        image: "docker.elastic.co/elasticsearch/elasticsearch:8.5.1"
+        imagePullPolicy: "IfNotPresent"
+        readinessProbe:
+          exec:
+            command:
+              - bash
+              - -c
+              - |
+                set -e
+
+                # Exit if ELASTIC_PASSWORD in unset
+                if [ -z "${ELASTIC_PASSWORD}" ]; then
+                  echo "ELASTIC_PASSWORD variable is missing, exiting"
+                  exit 1
+                fi
+
+                # If the node is starting up wait for the cluster to be ready (request params: "wait_for_status=green&timeout=1s" )
+                # Once it has started only check that the node itself is responding
+                START_FILE=/tmp/.es_start_file
+
+                # Disable nss cache to avoid filling dentry cache when calling curl
+                # This is required with Elasticsearch Docker using nss < 3.52
+                export NSS_SDB_USE_CACHE=no
+
+                http () {
+                  local path="${1}"
+                  local args="${2}"
+                  set -- -XGET -s
+
+                  if [ "$args" != "" ]; then
+                    set -- "$@" $args
+                  fi
+
+                  set -- "$@" -u "elastic:${ELASTIC_PASSWORD}"
+
+                  curl --output /dev/null -k "$@" "https://127.0.0.1:9200${path}"
+                }
+
+                if [ -f "${START_FILE}" ]; then
+                  echo 'Elasticsearch is already running, lets check the node is healthy'
+                  HTTP_CODE=$(http "/" "-w %{http_code}")
+                  RC=$?
+                  if [[ ${RC} -ne 0 ]]; then
+                    echo "curl --output /dev/null -k -XGET -s -w '%{http_code}' \${BASIC_AUTH} https://127.0.0.1:9200/ failed with RC ${RC}"
+                    exit ${RC}
+                  fi
+                  # ready if HTTP code 200, 503 is tolerable if ES version is 6.x
+                  if [[ ${HTTP_CODE} == "200" ]]; then
+                    exit 0
+                  elif [[ ${HTTP_CODE} == "503" && "8" == "6" ]]; then
+                    exit 0
+                  else
+                    echo "curl --output /dev/null -k -XGET -s -w '%{http_code}' \${BASIC_AUTH} https://127.0.0.1:9200/ failed with HTTP code ${HTTP_CODE}"
+                    exit 1
+                  fi
+
+                else
+                  echo 'Waiting for elasticsearch cluster to become ready (request params: "wait_for_status=green&timeout=1s" )'
+                  if http "/_cluster/health?wait_for_status=green&timeout=1s" "--fail" ; then
+                    touch ${START_FILE}
+                    exit 0
+                  else
+                    echo 'Cluster is not yet ready (request params: "wait_for_status=green&timeout=1s" )'
+                    exit 1
+                  fi
+                fi
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 3
+          timeoutSeconds: 5
+        ports:
+        - name: http
+          containerPort: 9200
+        - name: transport
+          containerPort: 9300
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 2Gi
+          requests:
+            cpu: 1000m
+            memory: 2Gi
+        env:
+          - name: node.name
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: cluster.initial_master_nodes
+            value: "elasticsearch-master-0,elasticsearch-master-1,elasticsearch-master-2,"
+          - name: node.roles
+            value: "master,data,data_content,data_hot,data_warm,data_cold,ingest,ml,remote_cluster_client,transform,"
+          - name: discovery.seed_hosts
+            value: "elasticsearch-master-headless"
+          - name: cluster.name
+            value: "elasticsearch"
+          - name: network.host
+            value: "0.0.0.0"
+          - name: ELASTIC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: elasticsearch-master-credentials
+                key: password
+          - name: xpack.security.enabled
+            value: "true"
+          - name: xpack.security.transport.ssl.enabled
+            value: "true"
+          - name: xpack.security.http.ssl.enabled
+            value: "true"
+          - name: xpack.security.transport.ssl.verification_mode
+            value: "certificate"
+          - name: xpack.security.transport.ssl.key
+            value: "/usr/share/elasticsearch/config/certs/tls.key"
+          - name: xpack.security.transport.ssl.certificate
+            value: "/usr/share/elasticsearch/config/certs/tls.crt"
+          - name: xpack.security.transport.ssl.certificate_authorities
+            value: "/usr/share/elasticsearch/config/certs/ca.crt"
+          - name: xpack.security.http.ssl.key
+            value: "/usr/share/elasticsearch/config/certs/tls.key"
+          - name: xpack.security.http.ssl.certificate
+            value: "/usr/share/elasticsearch/config/certs/tls.crt"
+          - name: xpack.security.http.ssl.certificate_authorities
+            value: "/usr/share/elasticsearch/config/certs/ca.crt"
+        volumeMounts:
+          - name: "elasticsearch-master"
+            mountPath: /usr/share/elasticsearch/data
+          - name: elasticsearch-certs
+            mountPath: /usr/share/elasticsearch/config/certs
+            readOnly: true
+---
+# Source: elasticsearch/templates/test/test-elasticsearch-health.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "elasticsearch-nsdls-test"
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  securityContext:
+    fsGroup: 1000
+    runAsUser: 1000
+  containers:
+  - name: "elasticsearch-jtulj-test"
+    env:
+      - name: ELASTIC_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: elasticsearch-master-credentials
+            key: password
+    image: "docker.elastic.co/elasticsearch/elasticsearch:8.5.1"
+    imagePullPolicy: "IfNotPresent"
+    command:
+      - "sh"
+      - "-c"
+      - |
+        #!/usr/bin/env bash -e
+        curl -XGET --fail --cacert /usr/share/elasticsearch/config/certs/tls.crt -u "elastic:${ELASTIC_PASSWORD}" https://'elasticsearch-master:9200/_cluster/health?wait_for_status=green&timeout=1s'
+    volumeMounts:
+      - name: elasticsearch-certs
+        mountPath: /usr/share/elasticsearch/config/certs
+        readOnly: true
+  restartPolicy: Never
+  volumes:
+    - name: elasticsearch-certs
+      secret:
+        secretName: elasticsearch-master-certs

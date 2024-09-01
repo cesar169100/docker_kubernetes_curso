@@ -17,9 +17,9 @@ vpc:
 
 managedNodeGroups:
   - name: group-1
-    instanceType: t3.small
-    desiredCapacity: 2
-    minSize: 2
+    instanceType: t3.medium
+    desiredCapacity: 3
+    minSize: 3
     maxSize: 5
     volumeSize: 20
     ssh:
