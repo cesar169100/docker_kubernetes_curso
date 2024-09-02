@@ -5,13 +5,28 @@ helm install metrics-server -n kube-system bitnami/metrics-server
 
 ### Prometheus
 # Creamos un namespace para prometheus
-kubectl create ns monitoring
+kubectl create ns monitoring 
+o
+kubectl create namespace prometheus
+
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update
-# Instalamos en el namespace monitoring
-helm install -n monitoring prometheus prometheus-community/prometheus
+
+# Antes de instalar prometheus, es necesario hacer la autenticacion oidc y desplegar el driver
+# CSI como en el paso 6 de las instrucciones de repaso final de la seccion de EKS. El CSI 
+# permite aprovisionar volumenes
+
+# Instalamos en el namespace monitoring. Revisar el comando en la doc de aws eks prometheus
+helm upgrade -i prometheus prometheus-community/prometheus \
+    --namespace prometheus \
+    --set alertmanager.persistence.storageClass="gp2" \
+    --set server.persistentVolume.storageClass="gp2"
+
+
 # Forward del puerto para acceder al server de prometheus
-kubectl -n monitoring port-forward svc/prometheus-server 8080:80
+kubectl --namespace=prometheus port-forward deploy/prometheus-server 9090
+
+http://localhost:9090
 con esto ya se puede abrir en localhost:8080
 
 # Escalar nodos
@@ -26,8 +41,8 @@ helm install -n monitoring grafana grafana/grafana
 kubectl -n monitoring get secrets grafana -o yaml
 # Hacer al password para obtener su valor real pues esta en base64:
 echo password |base64 -d
-echo Q3d5VFJveDRYdVhlTmRDUExLcFVYVzIxNzBIRDZ2ejRMdzE2cGt6SQ== |base64 -d
-contrasena real: CwyTRox4XuXeNdCPLKpUXW2170HD6vz4Lw16pkzI
+echo R09EeDZWT3VXSjRBbExmNE9TSnhGREozamhnOHd1b1dRYWQwcjlXOA== |base64 -d
+contrasena real: GODx6VOuWJ4AlLf4OSJxFDJ3jhg8wuoWQad0r9W8
 El usuario es admin
 # port forwarding
 kubectl -n monitoring port-forward svc/grafana 8080:80

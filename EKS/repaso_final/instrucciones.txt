@@ -147,6 +147,9 @@ curl -o example-iam-policy.json https://raw.githubusercontent.com/kubernetes-sig
 Creamos la politica en base al archivo anterior
 aws iam create-policy --policy-name AmazonEKS_EBS_CSI_Driver_Policy --policy-document file://example-iam-policy.json
 
+Hacer el mismo paso de autenticacion oidc en caso de que no este hecho aun:
+eksctl utils associate-iam-oidc-provider --cluster cluster_name --approve
+
 Creamos rol para nuestro driver CSI en base a la politica anterior:
 eksctl create iamserviceaccount \
   --cluster=mi-cluster \

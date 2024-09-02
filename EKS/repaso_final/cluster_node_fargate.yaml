@@ -17,7 +17,7 @@ vpc:
 
 managedNodeGroups:
   - name: group-1
-    instanceType: t3.medium
+    instanceType: t3.small
     desiredCapacity: 3
     minSize: 3
     maxSize: 5
