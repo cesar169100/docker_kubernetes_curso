@@ -35,4 +35,16 @@ default/hola-mundo -> Ponemos tag mutability en mutable para poder editar los no
 - En los Makefile se pueden meter parametros a los comandos, usar variables de entorno, ect. Eso no se vera aqui, investigar en la doc GNU make
 ## Seccion ECS y Fargate
 # Video 72: Presentacion de la leccion
-- AWS ECS (Elastic Container Service) es un servicio de orquestación de contenedores que permite ejecutar y escalar aplicaciones en contenedores usando Docker. Facilita la gestión de contenedores en una infraestructura de AWS, soportando tanto entornos con instancias EC2 como con AWS Fargate (serverless).
+- AWS ECS (Elastic Container Service) es un servicio de orquestación de contenedores que permite ejecutar y escalar aplicaciones en contenedores usando Docker. Facilita la gestión de contenedores en una infraestructura de AWS, soportando tanto entornos con instancias EC2 como con AWS Fargate (serverless). Alternativa a Kubernetes
+# Video 73: Crear imagen
+Se crea la imagen a partir del dockerfile de este video. Se hace lo mismo que en la seccion ECR.
+# Video 74: Crear cluster en ECS
+- Ir a ECS -> clusters -> Create cluster -> Damos nombre -> Podemos dar un namespace, yo lo dejare asi -> Infra: Elegir aws ec2 o fargate -> Dejar la opcion de autoscaling group en create new -> provisionamiento ON DEMAND -> AMI deja la estandar amazon linux 2 que marque ahi -> Elige el tipo de instancia ec2 si elegiste ec2(puse t3.small), deja en crear un nuevo rol para EC2 -> Pon la capacidad deseada de instancias -> Root EBS volume size dejalo en 30 -> Networking: Dejalo todo estandar hasta el security group, pon crear uno nuevo y ponle la inbound rule con puerto 80 y source anywhere(0.0.0.0/0), abre el puerto 80 a todos lados. -> En monitoring activa la opcion Use Container Insights de cloudwatch -> Crear
+# Video 75: Task Definition
+- Una task definition en AWS ECS es un archivo JSON que define cómo ejecutar contenedores en ECS. Especifica configuraciones como la imagen de Docker, los recursos (CPU y memoria), las variables de entorno, los volúmenes y las políticas de IAM necesarias para una tarea o servicio en ECS.
+- Ir a ECS -> Task definitions -> Create new (no json) -> dar nombre -> Infra: Elegir ec2 o fargate, sistema operativo (linux) y networking mode awsvpc -> Dar task size 1vCPU=1024Cpu puedes ponerlo en enteros y esto serian cpus y megas o como 1 vCPU o 1 GB -> Definir Task role en caso de que el container necesite hacer peiciones, por ejemplo, a S3 -> Task execution role create new -> En el container, dar nombre y poner la image URI de ECR -> Dejar todo estandar hasta la parte de loggeo: Dejar activada la opcion Use log collection ->
+Crear.
+# Video 76: Tasks
+- Task: Una ejecucion de un container
+- En el cluster creado ir a task -> Run Task -> En Compute configuration elige Launch Type y tipo EC2 o fargate. -> En Deployment configuration Elige task para una tarea simple o service para una aplicacion, elige la familia(nombre de la task definition) -> DEfine el numero de Desired tasks (replicas) y lo demas estandar -> Crear
+# Video 77: Servicios
