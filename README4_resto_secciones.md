@@ -48,3 +48,6 @@ Crear.
 - Task: Una ejecucion de un container
 - En el cluster creado ir a task -> Run Task -> En Compute configuration elige Launch Type y tipo EC2 o fargate. -> En Deployment configuration Elige task para una tarea simple o service para una aplicacion, elige la familia(nombre de la task definition) -> DEfine el numero de Desired tasks (replicas) y lo demas estandar -> Crear
 # Video 77: Servicios
+- Se define igual que la task, el servicio es un deployment y las task son las replicas. 
+# Video 78: Balanceadores de carga
+- Durante la definicion de un servicio, como en el video anterior, hay una opcion de definir un LB. Elegir esta opcion y darle en application load balancer, darle nombre, que haga uno nuevo y lo demas estandar.
