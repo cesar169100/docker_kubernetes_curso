@@ -51,3 +51,26 @@ Crear.
 - Se define igual que la task, el servicio es un deployment y las task son las replicas. 
 # Video 78: Balanceadores de carga
 - Durante la definicion de un servicio, como en el video anterior, hay una opcion de definir un LB. Elegir esta opcion y darle en application load balancer, darle nombre, que haga uno nuevo y lo demas estandar.
+# Video 79 y 80: Replicar en Fargate y temas de monitoreo
+Revisar bien si en algun momento es necesario.
+## Seccion Helm
+# Video 81: Presentacion
+Tomar los recursos de un manifest (deploys, servicios, etc) y empaquetarlos en un chart de helm y parametrizado. Recordar que helm es el manejador de paquetes de kubernetes.
+# Video 82: Introduccion en instalar charts
+- En la seccion charts de la pagina oficial de helm vienen todos los charts que pueden ser descargados. Helm se comunica automaticamente con nuestro cluster, no necesita comandos para establecer comunicacion.
+- helm repo list : repos agregados
+- helm ls : Charts descargados
+- helm install nombre -n namespace el_resto : Instalar en un namespace
+- helm ls -A : Todos los charts instalados
+- helm ls -n namespace : Los charts instalados en ese ns
+- helm search repo repo_name -l : Te da las versiones disponibles de ese chart
+- helm install nombre -n namespace el_resto --version 13.1.2 : Ejemplo de como instalar una version en concreto.
+- Ejemplos:
+helm install nginx-staging -n nginx-staging bitnami/nginx --version 16.0.0
+helm install nginx-prod -n nginx-prod bitnami/nginx --version 18.1.11
+# Video 83: Parametros
+- En el artifact Hub de Helm, para cada chart si esta bien documentado tendremos su seccion de parametros. Hay globales, comunes, especiales de ese chart, etc. En esta doc aparecen los valores por defecto de cada parametro.
+- Hay parametros que aparecen, por ejemplo, como service.type o param.algo.algomas en la doc del artifact hub. Este punto es un separador, es decir si ves service.type, y quieres modificar este parametro en un archivo yaml tendrias que ponerlo asi:
+service:
+  type: NodePort
+Por ejemplo...

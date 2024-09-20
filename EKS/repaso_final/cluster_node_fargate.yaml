@@ -20,7 +20,7 @@ managedNodeGroups:
     instanceType: t3.small
     desiredCapacity: 3
     minSize: 3
-    maxSize: 5
+    maxSize: 6
     volumeSize: 20
     ssh:
       allow: true # Activar acceso via ssh

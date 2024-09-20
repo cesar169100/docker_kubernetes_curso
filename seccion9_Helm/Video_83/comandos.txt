@@ -1,0 +1,14 @@
+# Comando que hace la instalacion modificando un parametro
+helm install nginx-2replicas bitnami/nginx --set replicaCount=2
+# Tambien se los podemos pasar a traves de un archivo:
+helm install nginx-np bitnami/nginx -f ./ruta/hasta/values.yaml
+
+# No es necesario borrar nuestro helm, le podemos actualizar los parametros:
+helm upgrade nginx-np bitnami/nginx -f values.yaml
+
+# Si instalamos una version tambien podemos dar upgrade a la version y ademas si queremos, cambiar
+# los parametros:
+helm install nginx bitnami/nginx --version 13.1.2
+helm upgrade nginx bitnami/nginx --version 13.1.3 -f values.yaml
+
+helm install airflow bitnami/airflow --version 19.0.0
