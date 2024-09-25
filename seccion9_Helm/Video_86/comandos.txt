@@ -1,0 +1,23 @@
+Si no tienes alguno, crea un repo. El paquete que se haga despues tiene que tener el mismo 
+nombre que este repo:
+
+aws ecr create-repository \
+     --repository-name helm-test-chart \
+     --region us-east-1
+
+Hazlo paquete (.tgz):
+helm package helm-test-chart
+
+Loggearnos a nuestro repo, este es casi igual al comando que con imagenes:
+aws ecr get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin 590184078061.dkr.ecr.us-east-1.amazonaws.com
+
+Push del chart:
+helm push helm-test-chart-0.1.0.tgz oci://590184078061.dkr.ecr.us-east-1.amazonaws.com/
+Para descargar el chart y luego instalarlo en un cluster eks:
+helm pull oci://<account-id>.dkr.ecr.<region>.amazonaws.com/<chart-name>:<version>
+Instalacion:
+helm install <release-name> <chart-name>-<version>.tgz --values values.yaml
+si es que hay un values.yaml
+
+
+590184078061.dkr.ecr.us-east-1.amazonaws.com/helm-test-chart:0.1.0

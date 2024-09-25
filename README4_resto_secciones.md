@@ -74,3 +74,19 @@ helm install nginx-prod -n nginx-prod bitnami/nginx --version 18.1.11
 service:
   type: NodePort
 Por ejemplo...
+# Video 84: Inspeccionar un chart
+- helm fetch repo/chart : helm fecth bitnami/airflow, por ejemplo. Descarta un targz, si lo queremos ya descomprimido helm fecth bitnami/airflow --untar y con la version:
+helm fecth bitnami/nginx --untar --version 13.1.6
+- Una vez que se descarga, en la carpeta airflow, nginx, etc, hay varios archivos.
+- Uno de esos archivos es Chart.yaml: Metadatos de ese paquete.
+- El Readme.md para sus anotaciones.
+- values.yaml : Los parametros que vimos en el video anterior junto a una breve explicacion.
+- values.schema.json : Opcional. Se usa para especificar que valores puede tomar un parametro.
+- La carpeta templates: Aqui vienen los manifest de los deployment, statefulset, services, etc que se van a desplegar. En la sintaxis, define los valores a partir de los archivos de valores como el values y el values.schema.
+- Si hacemos el fetch sin la opcion untar y luego 'helm template archivo_tar' veremos directamente todos los manifest del despliegue.  
+- Al final, si lo queremos instalar: 'helm install nombre archivo_tar'
+# Video 85: Crear un chart
+- helm create chart_nombre : Crea una carpeta llamada chart_nombre y dentro las carpetas que deben ir dentro como el values.yaml, Chart.yaml, la carpeta templates, etc. Todo lo anterior obviamente para ser modificado segun lo que queramos. Podemos bajar un chart como en el video anterior y pegar los manifest que bajamos en nuestro propio chart y solo hacer los cambios que se necesiten.
+# Video 86: Subir el chart a ECR
+- En ECR es posible subir cualquier objeto compatible con OCI (Open container iniciative), y uno de ellos son los charts de Helm.
+- En el archivo comandos.txt de este video viene como hacerlo.
