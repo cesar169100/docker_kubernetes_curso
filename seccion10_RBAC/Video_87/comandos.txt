@@ -1,0 +1,54 @@
+Documentacion de RBAC:
+https://kubernetes.io/docs/reference/access-authn-authz/rbac/
+https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html
+
+
+Creamos un usuario para interactar con el cluster
+aws iam create-user --user-name rbac-user
+Le creamos sus access keys y las ponemos en un archivo json:
+aws iam create-access-key --user-name rbac-user | tee /tmp/create_output.json
+
+En este archivo exportamos unas variables de entorno y las tomamos del json creado en el paso
+anterior. Podria ser necesario instalar jq:
+source source.rc
+Nos da quien es el caller:
+aws sts get-caller-identity
+Revisar los perfiles :
+cat ~/.aws/config
+
+Para regresar al perfil default eliminar las variables de entorno creadas en el source.rc:
+unset AWS_SECRET_ACCESS_KEY
+y asi las otras dos...
+
+
+Este es el archivo configmap que configura la autenticacion contra los nodos. Si lo copiamos
+y modificamos esa copia pdremos alterar los permisos para un user en particular:
+kubectl get configmap -n kube-system aws-auth -o yaml | grep -v "creationTimestamp\|resourceVersion\|selfLink\|uid" | sed '/^  annotations:/,+2 d' > aws-auth.yaml
+
+Definimos una variable de entorno que es la que cambiaremos en el auth.yaml (esto no necesario):
+export ACCOUNT_ID=$(aws sts get-caller-identity|jq .Account -r)
+Agregamos esto al auth.yaml, poniendo el ACCOUNT_ID que queramos:
+data:
+  mapUsers: |
+    - userarn: arn:aws:iam::${ACCOUNT_ID}:user/rbac-user
+      username: rbac-user
+
+
+Aplicamos este cambio:
+kubectl apply -f aws-auth.yaml
+
+
+# testear
+AWS_SECRET_ACCESS_KEY=$(jq -r .AccessKey.SecretAccessKey /tmp/create_output.json) AWS_ACCESS_KEY_ID=$(jq -r .AccessKey.AccessKeyId /tmp/create_output.json) kubectl get all -A
+
+NOTA: Con el archivo role.yaml especificamos permisos y con roleBinding.yaml asociamos los permisos
+anteriores al user rbac-user
+Con esto, el user rbac-user ya puede hacer algunas acciones (definidas en role.yaml) en el cluster
+
+
+# eliminar 
+#con usuario admin : 
+aws iam delete-access-key --user-name rbac-user --access-key-id $(cat /tmp/create_output.json |jq .AccessKey.AccessKeyId -r)
+aws iam delete-user --user-name rbac-user
+
+

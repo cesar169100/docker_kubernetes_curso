@@ -1,0 +1,22 @@
+Autenticacion oidc, como ya lo hemos hecho antes:
+eksctl utils associate-iam-oidc-provider --cluster mi-cluster --approve
+
+Notas de lo anterior: 
+1) Crea un proveedor de identidad OIDC para el clúster EKS, si aún no 
+existe. Esto permite que el clúster EKS pueda utilizar IAM roles basados en la identidad OIDC.
+2) Habilita que los pods en el clúster puedan asumir roles de IAM. Esto es crucial para usar 
+Service Accounts de Kubernetes con IAM Roles asociados, permitiendo a los pods acceder a 
+recursos de AWS (como S3, DynamoDB, etc.) sin necesidad de credenciales estáticas.
+
+Creamos el rol con una politica de permisos:
+
+eksctl create iamserviceaccount \
+    --name s3-read-only \
+    --namespace default \
+    --cluster mi-cluster \
+    --attach-policy-arn arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess \
+    --approve \
+    --override-existing-serviceaccounts
+
+Una vez creado el service account se despliega el job.yaml que si esta asociado a la service
+account creada, con lo que tiene permiso de leer s3 y concluir el job.

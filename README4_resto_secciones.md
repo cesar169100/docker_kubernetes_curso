@@ -90,3 +90,30 @@ helm fecth bitnami/nginx --untar --version 13.1.6
 # Video 86: Subir el chart a ECR
 - En ECR es posible subir cualquier objeto compatible con OCI (Open container iniciative), y uno de ellos son los charts de Helm.
 - En el archivo comandos.txt de este video viene como hacerlo.
+## Seccion 10: RBAC
+# Video 87: Crear user con permisos de lectura
+- RBAC (Role-Based Access Control) en Kubernetes es un mecanismo de control de acceso que define qué acciones (como leer, escribir o modificar) pueden realizar los usuarios o servicios en los recursos del clúster, según los roles asignados.
+Componentes clave:
+
+    Roles: Definen permisos específicos (acciones que pueden realizarse) dentro de un namespace.
+    ClusterRoles: Definen permisos a nivel de clúster, aplicándose a todos los namespaces.
+    RoleBindings: Asocian un Role a un usuario o grupo, otorgándole permisos en un namespace.
+    ClusterRoleBindings: Asocian un ClusterRole a usuarios o grupos a nivel de clúster.
+
+Esto permite gestionar la seguridad y limitar el acceso a los recursos del clúster Kubernetes.
+- La descripcion del trabajo de este video esta en comandos.txt de este video. Basicamente se trata de crear un user para otro developer y darle ciertos permisos sobre el cluster.
+# Video 88: Ligar role IAM a service account
+- Instrucciones en comandos.txt
+- Se trata de dar permisos a un pod de hacer consultas, por ejemplo, a s3, alguna RDS, etc.
+## Seccion 11: Kustomize
+# Video 89: Intro
+- Herramienta para modificar manifest sin alterar el original. Para instalar dar kustomize install -> entrar en kustomize.io -> boton de install -> Elegir binarios -> El curl de ahi descarga el binario en arquitecturas AMD. -> hacer sudo install kustomize /usr/local/bin -> Ya queda instalado y puedes borrar el binario descargado
+- El archivo deployment.yaml es uno original que queremos modificar sin hacerle cambios y kustomization.yaml es donde se definen los cambios.
+- En una carpeta ponemos el manifest original y su kustomize, despues, parados en esa ruta hacemos kustomize build app/ y veremos el nuevo manifest ya modificado.
+- test.yaml solo es el manifest modificado con kustomize
+# Video 90: Entornos
+- En la carpeta bases viene el manifest original y su modificacion.
+- En la carpeta overlays viene un kustomize adicional que toma como base los manifest de bases y agrega etiquetas de prod y stagging respectivamente y los despliega cada uno en un namespace.
+- Se ejecutan los cambios con kustomize build ./ruta/hasta/overlays/prod y se despliega en el cluster con kubectl apply -k ./ruta/hasta/overlays/prod (crear antes el namespace)
+## Seccion 12: Terraform
+# Video 91: Desplegar VPC

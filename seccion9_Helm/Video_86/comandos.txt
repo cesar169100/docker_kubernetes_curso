@@ -13,6 +13,7 @@ aws ecr get-login-password --region us-east-1 | helm registry login --username A
 
 Push del chart:
 helm push helm-test-chart-0.1.0.tgz oci://590184078061.dkr.ecr.us-east-1.amazonaws.com/
+
 Para descargar el chart y luego instalarlo en un cluster eks:
 helm pull oci://<account-id>.dkr.ecr.<region>.amazonaws.com/<chart-name>:<version>
 Instalacion:

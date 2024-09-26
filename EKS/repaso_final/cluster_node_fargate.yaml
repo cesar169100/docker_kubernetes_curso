@@ -18,9 +18,9 @@ vpc:
 managedNodeGroups:
   - name: group-1
     instanceType: t3.small
-    desiredCapacity: 3
-    minSize: 3
-    maxSize: 6
+    desiredCapacity: 2
+    minSize: 2
+    maxSize: 4
     volumeSize: 20
     ssh:
       allow: true # Activar acceso via ssh

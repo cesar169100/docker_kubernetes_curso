@@ -1,0 +1,33 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+ - deployment.yaml # Direccion del manifest a kustomizar
+
+# Aqui se sustituye cualquier label que se llame app en el original y pone el valor definido.
+# env, como no existe la crea en cualquier lugar donde se haya definido una label en el 
+# manifest original.
+commonLabels:
+  app: httpd-deployment
+  env: staging
+
+# Cambia la imagen nginx a httpd y pone un nuevo tag.
+images:
+- name: nginx
+  newName: httpd
+  newTag: latest
+
+# Modifica el elemento de la ruta path por el nuevo valor value
+patches:
+- target:
+    kind: Deployment
+  patch: |-
+    - op: replace
+      path: /spec/template/spec/containers/0/name
+      value: httpd
+- target:
+    kind: Deployment
+  patch: |-
+    - op: replace
+      path: /metadata/name
+      value: httpd
