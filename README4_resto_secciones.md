@@ -117,3 +117,17 @@ Esto permite gestionar la seguridad y limitar el acceso a los recursos del clús
 - Se ejecutan los cambios con kustomize build ./ruta/hasta/overlays/prod y se despliega en el cluster con kubectl apply -k ./ruta/hasta/overlays/prod (crear antes el namespace)
 ## Seccion 12: Terraform
 # Video 91: Desplegar VPC
+- Descargar terraform -> Ir a su pag oficial terraform.io -> descargar para linux -> Ejecutar los comandos que ahi aparecen uno a uno.
+- El remote_state.tf es donde se define donde esta el estado remoto, que es de donde terraform trakea los cambios y estado de la infra. El estado remoto es un json donde estan esas especificaciones. El archivo remote_state.tf contiene el bucket donde esta el estado remoto
+- vpc.tf es modulo de aws para despelgar infra. Un modulo es una definicion de parametros que define como se levanta una infra. Este codigo indica pues como desplegar la vpc del futuro cluster, define zonas de disponibilidad, subnets, gateways, tags, etc
+- terraform init : Su función principal es inicializar el directorio de trabajo donde está ubicado el código de infraestructura. Aquí están sus principales tareas:
+
+    Descargar proveedores: Instala los plugins de los proveedores (como AWS, Azure, Google Cloud) que Terraform utilizará para gestionar los recursos.
+
+    Configurar el backend: Si el estado se almacena remotamente (remote state), terraform init configura y descarga el backend que se utilizará para guardar el estado.
+
+    Inicializar módulos: Si el proyecto utiliza módulos de Terraform, los descarga y los prepara para su uso.
+
+En resumen, terraform init prepara el entorno para que Terraform pueda ejecutar sus comandos de planificación, aplicación o destrucción de infraestructura.
+- terraform apply : Despliega infra, obviamente jala si tenemos nuestras credenciales aws configuradas con aws configure.
+
