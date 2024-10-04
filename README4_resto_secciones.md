@@ -130,4 +130,30 @@ Esto permite gestionar la seguridad y limitar el acceso a los recursos del clús
 
 En resumen, terraform init prepara el entorno para que Terraform pueda ejecutar sus comandos de planificación, aplicación o destrucción de infraestructura.
 - terraform apply : Despliega infra, obviamente jala si tenemos nuestras credenciales aws configuradas con aws configure.
+# Video 92
+# Video 93
+# Video 94
+En estos videos se entrara a detalle despues.
+## Seccion 13: 
+# Video 95: Continious delivery con CodePipeline y CodeBuild
+Esto requiere un curso a parte, revisar a fondo cuando sea necesario. Videocursos cloud, canal de youtube de este profesor para ver cursos gratuitos de aws, etc
+## Seccion 14: Laboratorios
+# Video 96: Crear imagen docker
+- Haremos una pequena aplicacion en python usando flask y se despliega con un dockerfile. Ejecutar el Dockerfile con docker build -t nombre .
+- Ejecutar en donde se encuentre el Dockerfile, lo anterior crea la imagen.
+- Para correr el container: docker run -P --rm nombre (nombre dado anteriormente). El -P es para que el puerto del EXPOSE se convierta en un puerto mapeado en nuestra maquina y --rm para que cuando salgamos del container, se elimine.
+- El puerto 5000 del expose funciona para nuestra maquina, pero como estamos en un container debemos revisar a que otro puerto mapeo ese 5000, lo anterior lo revisamos con docker ps -a
+# Video 97: Supervisor
+- Ejecutaremos el proceso anterior agregando supervisor.
+- Supervisor es una herramienta de control de procesos que se utiliza para gestionar y controlar varios procesos dentro de un contenedor. En Docker, el diseño típico es ejecutar un solo proceso por contenedor. Sin embargo, en algunos casos, puede ser necesario ejecutar múltiples procesos dentro de un mismo contenedor, y ahí es donde Supervisor es útil. Permite:
 
+    Ejecutar múltiples procesos: Supervisor permite iniciar y gestionar varios procesos en segundo plano (background) dentro del mismo contenedor Docker.
+
+    Monitoreo y reinicio automático: Si alguno de los procesos falla, Supervisor puede monitorearlo y reiniciarlo automáticamente.
+
+    Control centralizado: Proporciona una manera fácil de configurar y gestionar los procesos desde un solo archivo de configuración (supervisord.conf).
+
+Ejemplo de uso en Docker:
+
+    Un contenedor que necesita correr tanto un servidor web (como Nginx) como una aplicación de backend (por ejemplo, una API). Con Supervisor, ambos procesos pueden ejecutarse y gestionarse dentro del mismo contenedor.
+- Con el Dckerfile modificado para supervisor volver a hacer el build
