@@ -156,4 +156,18 @@ Esto requiere un curso a parte, revisar a fondo cuando sea necesario. Videocurso
 Ejemplo de uso en Docker:
 
     Un contenedor que necesita correr tanto un servidor web (como Nginx) como una aplicación de backend (por ejemplo, una API). Con Supervisor, ambos procesos pueden ejecutarse y gestionarse dentro del mismo contenedor.
-- Con el Dckerfile modificado para supervisor volver a hacer el build
+- Con el Dckerfile modificado para supervisor volver a hacer el build y run
+# Video 98: Docker compose
+- Levantar con docker-compose build y docker-compose up
+- Para ver los cambios en modo debug, generar Dockerfile-local (otra version) y ejecutar el docker-compose con este.
+- Todos los recursos hasta aqui estan en la seccion 13 Video 96.
+# Video 99: Agregar base de datos MySQL 
+- En el docker-compose se agragron servicios de base de datos y gestor de base de datos.
+# Video 100: Desplegar en minikube
+- En este video no hice actividades pues el objetivo real es desplegar en clusters eks.
+# Vide 104: ECR
+- Salte hasta este video para ver la parte de almacenar imagenes en aws, y despues desplegar en eks.
+- Creamos repo con: aws ecr create-repository --repository-name nombre
+- Usamos los comandos de 'push comands' de ecr
+# Video 101: Aplicacion en eks con load balancer y external DNS
+- Crear el load balancer y external dns como en eks/repaso_final

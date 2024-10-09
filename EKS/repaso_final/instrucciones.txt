@@ -255,3 +255,8 @@ Este comando nos da la zona de disponibilidad de un conjunto de subnets
 aws ec2 describe-subnets --subnet-ids subnet-0f386fe89fee2cb3c subnet-07250d7d4371d5d98 --query 'Subnets[*].[SubnetId,AvailabilityZone]' --output table
 
 
+
+ 
+
+ 
+

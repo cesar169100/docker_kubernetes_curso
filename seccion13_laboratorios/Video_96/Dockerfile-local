@@ -1,0 +1,17 @@
+FROM python:3.9.13-buster
+
+RUN apt update 
+RUN apt-get install supervisor -y
+
+WORKDIR /app
+
+COPY supervisor_services.conf /etc/supervisor/conf.d/
+COPY requirements.txt /app/requirements.txt
+RUN pip install -r /app/requirements.txt
+RUN rm -rf /app/requirements.txt
+# Aqui no copiamos esta carpeta para poder luego mapearla en el container y si hacemos cambios,
+# ir viendo esos cambios en tiempo real; esto para el modo debug y hacer desarrollo.
+# COPY src/ /app/src/
+
+EXPOSE 5000
+CMD supervisord -n -c /etc/supervisor/supervisord.conf

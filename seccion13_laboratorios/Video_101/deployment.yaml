@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: flask-python-helloworld
+  name: flask-python-helloworld
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: flask-python-helloworld
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: flask-python-helloworld
+    spec:
+      containers:
+      - image: 590184078061.dkr.ecr.us-east-1.amazonaws.com/labs:python
+        imagePullPolicy: Always
+        name: flask-python-helloworld
+        ports:
+        - containerPort: 5000
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: flask-python-helloworld
+  name: flask-python-helloworld
+spec:
+  ports:
+  - port: 5000
+    protocol: TCP
+    targetPort: 5000
+  selector:
+    app: flask-python-helloworld
+  type: NodePort
+# status:
+#   loadBalancer: {}
