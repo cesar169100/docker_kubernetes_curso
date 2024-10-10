@@ -171,3 +171,19 @@ Ejemplo de uso en Docker:
 - Usamos los comandos de 'push comands' de ecr
 # Video 101: Aplicacion en eks con load balancer y external DNS
 - Crear el load balancer y external dns como en eks/repaso_final
+- Material en Video 101 de la seccion correspondiente
+# Video 102: Aplicacion en eks con load balancer, external DNS y SSL
+- Creacion de certificados http sobre nuestro dominio. Ver a detalle despues; se hace a traves aws ACM (aws certified manager) y son gratis estos certificados pero solo con dominios creados en aws (route 53)
+# Video 103: Aplicacion en eks con nginx ingress y certificado Lets Encrypt
+- Se usa lets encryt en vez de aws ACM, ver despues.
+# Video 105: Helm
+- Lo mismo de la seccion Helm
+
+## Cosas importantes
+- resumen_final de la seccion EKS
+- Monitorizacion de la seccion 6
+- Guardado de imagenes en ECR seccion 7
+- Inspeccion y manejo de charts de helm seccion 9
+- Permisos para acceder a otros servicios desde el cluster con RBAC seccion 10
+- Laboratorios
+- project en un ejercicio que yo hice 
