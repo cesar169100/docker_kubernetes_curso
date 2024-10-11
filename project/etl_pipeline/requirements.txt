@@ -1,0 +1,3 @@
+fastapi
+pandas
+boto3

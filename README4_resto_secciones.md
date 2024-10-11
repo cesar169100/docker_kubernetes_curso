@@ -179,6 +179,11 @@ Ejemplo de uso en Docker:
 # Video 105: Helm
 - Lo mismo de la seccion Helm
 
+# project
+- Este es un ejercicio propio
+- Inicia creando una carpeta app y otra etl_pipeline, cuyo objetivo es que cada una sea un pipeline con su requirements e imagen en Dockerfile.
+- El codigo de estos pipelines no corre en docker a menos que pases las credenciales de aws, por lo que iremos directo a lanzarlo en eks. Lo primero es subir estas imagenes a ECR
+
 ## Cosas importantes
 - resumen_final de la seccion EKS
 - Monitorizacion de la seccion 6
