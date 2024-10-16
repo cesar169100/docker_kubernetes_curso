@@ -3,6 +3,7 @@ import uvicorn
 import boto3
 import pandas as pd
 from io import StringIO
+from pydantic import BaseModel
 
 # Crear una instancia de la aplicación FastAPI
 app = FastAPI()
@@ -38,6 +39,16 @@ async def leer_csv():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al leer el archivo: {str(e)}")
 
+# Definir un modelo Pydantic para validar la entrada
+class Numeros(BaseModel):
+    num1: float
+    num2: float
+
+# Endpoint POST que recibe dos números y devuelve su suma
+@app.post("/suma/")
+async def sumar_numeros(numeros: Numeros):
+    suma = numeros.num1 + numeros.num2
+    return {"suma": suma}
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

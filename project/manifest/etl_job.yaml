@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: etl-pipeline
+spec:
+  template:
+    metadata:
+      labels:
+        app: etl-pipeline
+    spec:
+      serviceAccountName: s3-full
+      containers:
+      - name: etl-pipeline
+        image: 590184078061.dkr.ecr.us-east-1.amazonaws.com/labs:etl-pipeline
+        # args: ["s3", "ls"]
+      restartPolicy: Never

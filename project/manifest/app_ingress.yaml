@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: flask-python-helloworld
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/subnets: subnet-0ce2f5b707a6ee4ec, subnet-08fca6abbd926a792
+    # external-dns.alpha.kubernetes.io/hostname: lab.laboratorio-kubernetes.com
+spec:
+  ingressClassName: alb
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: flask-python-helloworld
+            port:
+              number: 8000

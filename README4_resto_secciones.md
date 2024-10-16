@@ -183,6 +183,10 @@ Ejemplo de uso en Docker:
 - Este es un ejercicio propio
 - Inicia creando una carpeta app y otra etl_pipeline, cuyo objetivo es que cada una sea un pipeline con su requirements e imagen en Dockerfile.
 - El codigo de estos pipelines no corre en docker a menos que pases las credenciales de aws, por lo que iremos directo a lanzarlo en eks. Lo primero es subir estas imagenes a ECR
+- Una vez guardadas en ECR se preparan los manifest del deploy, servicio, ingress y el job para el etl.
+- Se necesita crear la iamserviceaccount para los permisos de los pods del cluster. Esto esta en manifest/comandos.txt
+- Con lo anterior ya puede correr un job, para el deploy hay que levantar lo necesario para el balanceador de carga, como se especifica en las instrucciones.txt del repaso_final de eks.
+- Levantado el aws load balancer ya se puede desplegar deploy, service e ingress.
 
 ## Cosas importantes
 - resumen_final de la seccion EKS

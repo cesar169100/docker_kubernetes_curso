@@ -1,0 +1,23 @@
+Activar oidc:
+eksctl utils associate-iam-oidc-provider --cluster cluster_name --approve
+
+Creamos el iamserviceaccount para darle permisos a los pods del cluster para escritura y 
+lectura:
+
+eksctl create iamserviceaccount \
+    --name s3-full \
+    --namespace kube-system \
+    --cluster mi-cluster \
+    --attach-policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess \
+    --approve \
+    --override-existing-serviceaccounts 
+
+El override sobreescribe esta serviceaccount si ya existe una con el mismo nombre.
+Obtener las serviceAccount:
+eksctl get iamserviceaccount --cluster mi-cluster
+
+Revisar zonas de disponibilidad: 
+aws ec2 describe-subnets --subnet-ids subnet-08fca6abbd926a792 --query 'Subnets[*].[SubnetId,AvailabilityZone]' --output table
+
+Borrar:
+eksctl delete iamserviceaccount --cluster=mi-cluster --namespace=default --name=s3-full
