@@ -5,7 +5,7 @@ metadata:
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/subnets: subnet-0ce2f5b707a6ee4ec, subnet-08fca6abbd926a792
+    alb.ingress.kubernetes.io/subnets: subnet-08e22e99500fad010, subnet-08fa139c9aa5246e0
     # external-dns.alpha.kubernetes.io/hostname: lab.laboratorio-kubernetes.com
 spec:
   ingressClassName: alb

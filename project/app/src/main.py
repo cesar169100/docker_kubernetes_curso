@@ -34,8 +34,9 @@ async def leer_csv():
         # Leer el contenido del archivo CSV
         csv_content = s3_object['Body'].read().decode('utf-8')
         # Usar pandas para leer el CSV desde el contenido descargado
-        df = pd.read_csv(StringIO(csv_content))   
-        return print(df)
+        df = pd.read_csv(StringIO(csv_content))  
+        columna = df.columns[1] 
+        return {"Columna:" f"{columna}"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al leer el archivo: {str(e)}")
 
